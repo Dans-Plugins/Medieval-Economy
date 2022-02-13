@@ -1,4 +1,4 @@
-package dansplugins.economysystem.Commands;
+package dansplugins.economysystem.commands;
 
 import dansplugins.economysystem.MedievalEconomy;
 import org.bukkit.ChatColor;
@@ -18,7 +18,7 @@ public class EconCommand {
 
             if (args[0].equalsIgnoreCase("help")) {
                 if (sender instanceof Player) {
-                    medievalEconomy.utilities.sendHelpMessage((Player) sender);
+                    medievalEconomy.localUtilityService.sendHelpMessage((Player) sender);
                 }
             }
 
@@ -28,10 +28,10 @@ public class EconCommand {
                     if (player.hasPermission("medievaleconomy.createcurrency") || player.hasPermission("medievaleconomy.admin")) {
 
                         if (args.length == 1) {
-                            medievalEconomy.utilities.addCurrencyToInventory(player, 1);
+                            medievalEconomy.localUtilityService.addCurrencyToInventory(player, 1);
                         }
                         else {
-                            medievalEconomy.utilities.addCurrencyToInventory(player, Integer.parseInt(args[1]));
+                            medievalEconomy.localUtilityService.addCurrencyToInventory(player, Integer.parseInt(args[1]));
                         }
 
                     }
@@ -65,7 +65,7 @@ public class EconCommand {
         }
         else {
             if (sender instanceof Player) {
-                medievalEconomy.utilities.sendHelpMessage((Player) sender);
+                medievalEconomy.localUtilityService.sendHelpMessage((Player) sender);
             }
         }
     }

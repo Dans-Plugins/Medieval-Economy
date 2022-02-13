@@ -1,16 +1,17 @@
-package dansplugins.economysystem;
+package dansplugins.economysystem.services;
 
-import dansplugins.economysystem.Commands.BalanceCommand;
-import dansplugins.economysystem.Commands.DepositCommand;
-import dansplugins.economysystem.Commands.EconCommand;
-import dansplugins.economysystem.Commands.WithdrawCommand;
+import dansplugins.economysystem.MedievalEconomy;
+import dansplugins.economysystem.commands.BalanceCommand;
+import dansplugins.economysystem.commands.DepositCommand;
+import dansplugins.economysystem.commands.EconCommand;
+import dansplugins.economysystem.commands.WithdrawCommand;
 import org.bukkit.command.CommandSender;
 
-public class CommandInterpreter {
+public class LocalCommandService {
 
     MedievalEconomy medievalEconomy = null;
 
-    public CommandInterpreter(MedievalEconomy plugin) {
+    public LocalCommandService(MedievalEconomy plugin) {
         medievalEconomy = plugin;
     }
 

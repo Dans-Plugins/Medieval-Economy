@@ -1,6 +1,7 @@
-package dansplugins.economysystem;
+package dansplugins.economysystem.services;
 
-import dansplugins.economysystem.Objects.Coinpurse;
+import dansplugins.economysystem.MedievalEconomy;
+import dansplugins.economysystem.objects.Coinpurse;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Utilities {
+public class LocalUtilityService {
 
     MedievalEconomy medievalEconomy = null;
 
-    public Utilities(MedievalEconomy plugin) {
+    public LocalUtilityService(MedievalEconomy plugin) {
         medievalEconomy = plugin;
     }
 

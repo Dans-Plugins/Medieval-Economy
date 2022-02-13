@@ -1,6 +1,7 @@
-package dansplugins.economysystem;
+package dansplugins.economysystem.services;
 
-import dansplugins.economysystem.Objects.Coinpurse;
+import dansplugins.economysystem.MedievalEconomy;
+import dansplugins.economysystem.objects.Coinpurse;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,11 +9,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class StorageManager {
+public class LocalStorageService {
 
     MedievalEconomy medievalEconomy = null;
 
-    public StorageManager(MedievalEconomy plugin) {
+    public LocalStorageService(MedievalEconomy plugin) {
         medievalEconomy = plugin;
     }
 

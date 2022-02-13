@@ -1,4 +1,4 @@
-package dansplugins.economysystem.Objects;
+package dansplugins.economysystem.objects;
 
 import dansplugins.economysystem.MedievalEconomy;
 

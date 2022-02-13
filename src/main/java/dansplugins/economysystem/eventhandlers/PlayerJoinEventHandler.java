@@ -1,6 +1,6 @@
-package dansplugins.economysystem.EventHandlers;
+package dansplugins.economysystem.eventhandlers;
 
-import dansplugins.economysystem.Objects.Coinpurse;
+import dansplugins.economysystem.objects.Coinpurse;
 import dansplugins.economysystem.MedievalEconomy;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,7 +17,7 @@ public class PlayerJoinEventHandler {
     }
 
     public void handle(PlayerJoinEvent event) {
-        if (!medievalEconomy.utilities.hasCoinpurse(event.getPlayer().getUniqueId())) {
+        if (!medievalEconomy.localUtilityService.hasCoinpurse(event.getPlayer().getUniqueId())) {
             giveStarterKit(event.getPlayer());
             assignCoinpurse(event.getPlayer());
         }
@@ -25,7 +25,7 @@ public class PlayerJoinEventHandler {
 
     private void giveStarterKit(Player player) {
         player.sendMessage(ChatColor.GREEN + "You wake up and find that you have some gold coins, some food and an empty book on your person.");
-        player.getInventory().addItem(medievalEconomy.utilities.getCurrency(50));
+        player.getInventory().addItem(medievalEconomy.localUtilityService.getCurrency(50));
         player.getInventory().addItem(new ItemStack(Material.BREAD, 10));
         player.getInventory().addItem(new ItemStack(Material.WRITABLE_BOOK));
     }

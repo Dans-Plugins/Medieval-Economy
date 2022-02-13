@@ -1,6 +1,6 @@
-package dansplugins.economysystem.Commands;
+package dansplugins.economysystem.commands;
 
-import dansplugins.economysystem.Objects.Coinpurse;
+import dansplugins.economysystem.objects.Coinpurse;
 import dansplugins.economysystem.MedievalEconomy;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -41,7 +41,7 @@ public class WithdrawCommand {
                         return;
                     }
 
-                    Coinpurse purse = medievalEconomy.utilities.getPlayersCoinPurse(player.getUniqueId());
+                    Coinpurse purse = medievalEconomy.localUtilityService.getPlayersCoinPurse(player.getUniqueId());
 
                     // enough coins check
                     if (purse.containsAtLeast(amount)) {
@@ -57,19 +57,19 @@ public class WithdrawCommand {
                         for (int i = 0; i < amount; i++) {
                             if (!(player.getInventory().firstEmpty() == -1)) {
                                 purse.removeCoins(1);
-                                player.getInventory().addItem(medievalEconomy.utilities.getCurrency(1));
+                                player.getInventory().addItem(medievalEconomy.localUtilityService.getCurrency(1));
                                 withdrawn++;
                             }
                             else {
                                 int remainder = amount - withdrawn;
                                 if (remainder < 64) {
                                     purse.removeCoins(remainder);
-                                    player.getInventory().addItem(medievalEconomy.utilities.getCurrency(remainder));
+                                    player.getInventory().addItem(medievalEconomy.localUtilityService.getCurrency(remainder));
                                     withdrawn = withdrawn + remainder;
                                 }
                                 else {
                                     purse.removeCoins(63);
-                                    player.getInventory().addItem(medievalEconomy.utilities.getCurrency(63));
+                                    player.getInventory().addItem(medievalEconomy.localUtilityService.getCurrency(63));
                                     withdrawn = withdrawn + 63;
                                     player.sendMessage(ChatColor.RED + "" + medievalEconomy.getConfig().getString("withdrawNotEnoughSpace"));
                                     return;

@@ -1,12 +1,14 @@
-package dansplugins.economysystem;
+package dansplugins.economysystem.services;
+
+import dansplugins.economysystem.MedievalEconomy;
 
 import java.io.File;
 
-public class ConfigManager {
+public class LocalConfigService {
 
     MedievalEconomy medievalEconomy = null;
 
-    public ConfigManager(MedievalEconomy plugin) {
+    public LocalConfigService(MedievalEconomy plugin) {
         medievalEconomy = plugin;
     }
 

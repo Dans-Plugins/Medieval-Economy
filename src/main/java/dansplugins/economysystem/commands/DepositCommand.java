@@ -1,6 +1,6 @@
-package dansplugins.economysystem.Commands;
+package dansplugins.economysystem.commands;
 
-import dansplugins.economysystem.Objects.Coinpurse;
+import dansplugins.economysystem.objects.Coinpurse;
 import dansplugins.economysystem.MedievalEconomy;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -42,14 +42,14 @@ public class DepositCommand {
                     }
 
                     // enough coins check
-                    if (player.getInventory().containsAtLeast(medievalEconomy.utilities.getCurrency(1), amount)) {
+                    if (player.getInventory().containsAtLeast(medievalEconomy.localUtilityService.getCurrency(1), amount)) {
 
                         // add coins to coinpurse
-                        Coinpurse purse = medievalEconomy.utilities.getPlayersCoinPurse(player.getUniqueId());
+                        Coinpurse purse = medievalEconomy.localUtilityService.getPlayersCoinPurse(player.getUniqueId());
                         purse.addCoins(amount);
 
                         // delete coins from inventory
-                        player.getInventory().removeItem(medievalEconomy.utilities.getCurrency(amount));
+                        player.getInventory().removeItem(medievalEconomy.localUtilityService.getCurrency(amount));
 
                         player.sendMessage(ChatColor.GREEN + medievalEconomy.getConfig().getString("depositTextStart") + amount + medievalEconomy.getConfig().getString("depositTextEnd"));
                     }

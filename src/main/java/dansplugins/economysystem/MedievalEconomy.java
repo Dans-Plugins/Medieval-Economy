@@ -1,9 +1,13 @@
 package dansplugins.economysystem;
 
-import dansplugins.economysystem.EventHandlers.PlayerDeathEventHandler;
-import dansplugins.economysystem.EventHandlers.PlayerJoinEventHandler;
-import dansplugins.economysystem.Objects.Coinpurse;
+import dansplugins.economysystem.eventhandlers.PlayerDeathEventHandler;
+import dansplugins.economysystem.eventhandlers.PlayerJoinEventHandler;
+import dansplugins.economysystem.objects.Coinpurse;
 import dansplugins.economysystem.bStats.Metrics;
+import dansplugins.economysystem.services.LocalCommandService;
+import dansplugins.economysystem.services.LocalConfigService;
+import dansplugins.economysystem.services.LocalStorageService;
+import dansplugins.economysystem.services.LocalUtilityService;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -27,10 +31,10 @@ public final class MedievalEconomy extends JavaPlugin implements Listener {
     public String version = "v1.2-beta-2";
 
     // subsystems
-    public StorageManager storage = new StorageManager(this);
-    public CommandInterpreter commands = new CommandInterpreter(this);
-    public Utilities utilities = new Utilities(this);
-    public ConfigManager config = new ConfigManager(this);
+    public LocalStorageService storage = new LocalStorageService(this);
+    public LocalCommandService commands = new LocalCommandService(this);
+    public LocalUtilityService localUtilityService = new LocalUtilityService(this);
+    public LocalConfigService config = new LocalConfigService(this);
 
     // saved lists
     public ArrayList<Coinpurse> coinpurses = new ArrayList<>();
@@ -39,7 +43,7 @@ public final class MedievalEconomy extends JavaPlugin implements Listener {
     public void onEnable() {
         System.out.println(getConfig().getString("enablingText"));
 
-        utilities.ensureSmoothTransitionBetweenVersions();
+        localUtilityService.ensureSmoothTransitionBetweenVersions();
 
         // config creation/loading
         if (!(new File("./plugins/MedievalEconomy/config.yml").exists())) {

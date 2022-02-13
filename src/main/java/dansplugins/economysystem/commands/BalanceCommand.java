@@ -1,6 +1,6 @@
-package dansplugins.economysystem.Commands;
+package dansplugins.economysystem.commands;
 
-import dansplugins.economysystem.Objects.Coinpurse;
+import dansplugins.economysystem.objects.Coinpurse;
 import dansplugins.economysystem.MedievalEconomy;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -21,7 +21,7 @@ public class BalanceCommand {
             // permission check
             if (player.hasPermission("medievaleconomy.balance") || player.hasPermission("medievaleconomy.default")) {
 
-                Coinpurse purse = medievalEconomy.utilities.getPlayersCoinPurse(player.getUniqueId());
+                Coinpurse purse = medievalEconomy.localUtilityService.getPlayersCoinPurse(player.getUniqueId());
 
                 if (purse != null) {
 
