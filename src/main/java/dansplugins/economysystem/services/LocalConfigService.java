@@ -14,7 +14,7 @@ public class LocalConfigService {
 
     public void handleVersionMismatch() {
 
-        if (!medievalEconomy.getConfig().getString("version").equalsIgnoreCase(medievalEconomy.version)) {
+        if (!medievalEconomy.getConfig().getString("version").equalsIgnoreCase(medievalEconomy.getVersion())) {
             System.out.println("[ALERT] Verson mismatch! Saving old config as config.yml.old and loading in the default values.");
             renameConfigToConfigDotOldAndSaveDefaults();
         }
@@ -36,7 +36,7 @@ public class LocalConfigService {
     }
 
     public void saveConfigDefaults() {
-        medievalEconomy.getConfig().addDefault("version", medievalEconomy.version);
+        medievalEconomy.getConfig().addDefault("version", medievalEconomy.getVersion());
         medievalEconomy.getConfig().addDefault("enablingText", "Medieval Economy is enabling...");
         medievalEconomy.getConfig().addDefault("enabledText", "Medieval Economy is enabled!");
         medievalEconomy.getConfig().addDefault("disablingText", "Medieval Economy is disabling...");

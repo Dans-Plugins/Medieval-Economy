@@ -1,7 +1,7 @@
 package dansplugins.economysystem.commands;
 
-import dansplugins.economysystem.objects.Coinpurse;
 import dansplugins.economysystem.MedievalEconomy;
+import dansplugins.economysystem.objects.Coinpurse;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

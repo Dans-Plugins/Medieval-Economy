@@ -6,7 +6,7 @@
 
     <groupId>KingdomProgrammers</groupId>
     <artifactId>Medieval-Economy</artifactId>
-    <version>v1.2-beta-2</version>
+    <version>1.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Medieval-Economy</name>

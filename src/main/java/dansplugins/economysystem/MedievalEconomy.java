@@ -1,9 +1,9 @@
 package dansplugins.economysystem;
 
+import dansplugins.economysystem.bStats.Metrics;
 import dansplugins.economysystem.eventhandlers.PlayerDeathEventHandler;
 import dansplugins.economysystem.eventhandlers.PlayerJoinEventHandler;
 import dansplugins.economysystem.objects.Coinpurse;
-import dansplugins.economysystem.bStats.Metrics;
 import dansplugins.economysystem.services.LocalCommandService;
 import dansplugins.economysystem.services.LocalConfigService;
 import dansplugins.economysystem.services.LocalStorageService;
@@ -26,9 +26,7 @@ import static org.bukkit.Bukkit.getOfflinePlayers;
 import static org.bukkit.Bukkit.getOnlinePlayers;
 
 public final class MedievalEconomy extends JavaPlugin implements Listener {
-
-    // version
-    public String version = "v1.2-beta-2";
+    private final String pluginVersion = "v" + getDescription().getVersion();
 
     // subsystems
     public LocalStorageService storage = new LocalStorageService(this);
@@ -51,7 +49,7 @@ public final class MedievalEconomy extends JavaPlugin implements Listener {
         }
         else {
             // check version
-            if (!getConfig().getString("version").equalsIgnoreCase(version)) {
+            if (!getConfig().getString("version").equalsIgnoreCase(pluginVersion)) {
                 config.handleVersionMismatch();
             }
             reloadConfig();
@@ -116,5 +114,9 @@ public final class MedievalEconomy extends JavaPlugin implements Listener {
         }
 
         return null;
+    }
+
+    public String getVersion() {
+        return pluginVersion;
     }
 }

@@ -1,5 +1,5 @@
 name: MedievalEconomy
-version: "1.2-beta-2"
+version: '${project.version}'
 author: DanTheTechMan
 main: dansplugins.economysystem.MedievalEconomy
 api-version: "1.15"
