@@ -7,8 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class DepositCommand {
-
-    MedievalEconomy medievalEconomy = null;
+    private final MedievalEconomy medievalEconomy;
 
     public DepositCommand(MedievalEconomy plugin) {
         medievalEconomy = plugin;
@@ -42,14 +41,14 @@ public class DepositCommand {
                     }
 
                     // enough coins check
-                    if (player.getInventory().containsAtLeast(medievalEconomy.localUtilityService.getCurrency(1), amount)) {
+                    if (player.getInventory().containsAtLeast(medievalEconomy.getUtilityService().getCurrency(1), amount)) {
 
                         // add coins to coinpurse
-                        Coinpurse purse = medievalEconomy.localUtilityService.getPlayersCoinPurse(player.getUniqueId());
+                        Coinpurse purse = medievalEconomy.getUtilityService().getPlayersCoinPurse(player.getUniqueId());
                         purse.addCoins(amount);
 
                         // delete coins from inventory
-                        player.getInventory().removeItem(medievalEconomy.localUtilityService.getCurrency(amount));
+                        player.getInventory().removeItem(medievalEconomy.getUtilityService().getCurrency(amount));
 
                         player.sendMessage(ChatColor.GREEN + medievalEconomy.getConfig().getString("depositTextStart") + amount + medievalEconomy.getConfig().getString("depositTextEnd"));
                     }

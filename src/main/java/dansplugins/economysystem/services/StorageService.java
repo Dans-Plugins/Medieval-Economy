@@ -9,11 +9,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class LocalStorageService {
+public class StorageService {
+    private final MedievalEconomy medievalEconomy;
 
-    MedievalEconomy medievalEconomy = null;
-
-    public LocalStorageService(MedievalEconomy plugin) {
+    public StorageService(MedievalEconomy plugin) {
         medievalEconomy = plugin;
     }
 
@@ -37,7 +36,7 @@ public class LocalStorageService {
             FileWriter saveWriter = new FileWriter(saveFile);
 
             // actual saving takes place here
-            for (Coinpurse purse : medievalEconomy.coinpurses) {
+            for (Coinpurse purse : medievalEconomy.getCoinpurses()) {
                 saveWriter.write(purse.getPlayerUUID().toString() + ".txt" + "\n");
             }
 
@@ -49,7 +48,7 @@ public class LocalStorageService {
     }
 
     public void saveCoinpurses() {
-        for (Coinpurse purse : medievalEconomy.coinpurses) {
+        for (Coinpurse purse : medievalEconomy.getCoinpurses()) {
             purse.save();
         }
     }
@@ -68,16 +67,16 @@ public class LocalStorageService {
 
                 // existence check
                 int index = -1;
-                for (int i = 0; i < medievalEconomy.coinpurses.size(); i++) {
-                    if (medievalEconomy.coinpurses.get(i).getPlayerUUID().equals(temp.getPlayerUUID())) {
+                for (int i = 0; i < medievalEconomy.getCoinpurses().size(); i++) {
+                    if (medievalEconomy.getCoinpurses().get(i).getPlayerUUID().equals(temp.getPlayerUUID())) {
                         index = i;
                     }
                 }
                 if (index != -1) {
-                    medievalEconomy.coinpurses.remove(index);
+                    medievalEconomy.getCoinpurses().remove(index);
                 }
 
-                medievalEconomy.coinpurses.add(temp);
+                medievalEconomy.getCoinpurses().add(temp);
             }
 
             loadReader.close();
@@ -99,7 +98,7 @@ public class LocalStorageService {
                 Coinpurse temp = new Coinpurse(medievalEconomy);
                 temp.legacyLoad(nextName);
 
-                medievalEconomy.coinpurses.add(temp);
+                medievalEconomy.getCoinpurses().add(temp);
             }
 
             loadReader.close();

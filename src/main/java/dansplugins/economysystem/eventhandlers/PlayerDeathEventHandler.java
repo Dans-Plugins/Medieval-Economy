@@ -6,15 +6,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 public class PlayerDeathEventHandler {
-
-    MedievalEconomy medievalEconomy = null;
+    private final MedievalEconomy medievalEconomy;
 
     public PlayerDeathEventHandler(MedievalEconomy plugin) {
         medievalEconomy = plugin;
     }
 
     public void handle(PlayerDeathEvent event) {
-        Coinpurse purse = medievalEconomy.localUtilityService.getPlayersCoinPurse(event.getEntity().getUniqueId());
+        Coinpurse purse = medievalEconomy.getUtilityService().getPlayersCoinPurse(event.getEntity().getUniqueId());
 
         if (purse.getCoins() != 0) {
 
@@ -32,7 +31,7 @@ public class PlayerDeathEventHandler {
             purse.removeCoins(amountToDrop);
 
             // drop coins on ground
-            event.getDrops().add(medievalEconomy.localUtilityService.getCurrency(amountToDrop));
+            event.getDrops().add(medievalEconomy.getUtilityService().getCurrency(amountToDrop));
 
             // inform player
             event.getEntity().sendMessage(ChatColor.RED + medievalEconomy.getConfig().getString("deathMessage"));

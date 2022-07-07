@@ -4,10 +4,10 @@ import dansplugins.economysystem.bStats.Metrics;
 import dansplugins.economysystem.eventhandlers.PlayerDeathEventHandler;
 import dansplugins.economysystem.eventhandlers.PlayerJoinEventHandler;
 import dansplugins.economysystem.objects.Coinpurse;
-import dansplugins.economysystem.services.LocalCommandService;
-import dansplugins.economysystem.services.LocalConfigService;
-import dansplugins.economysystem.services.LocalStorageService;
-import dansplugins.economysystem.services.LocalUtilityService;
+import dansplugins.economysystem.services.CommandService;
+import dansplugins.economysystem.services.ConfigService;
+import dansplugins.economysystem.services.StorageService;
+import dansplugins.economysystem.services.UtilityService;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -28,39 +28,37 @@ import static org.bukkit.Bukkit.getOnlinePlayers;
 public final class MedievalEconomy extends JavaPlugin implements Listener {
     private final String pluginVersion = "v" + getDescription().getVersion();
 
-    // subsystems
-    public LocalStorageService storage = new LocalStorageService(this);
-    public LocalCommandService commands = new LocalCommandService(this);
-    public LocalUtilityService localUtilityService = new LocalUtilityService(this);
-    public LocalConfigService config = new LocalConfigService(this);
+    private final StorageService storageService = new StorageService(this);
+    private final CommandService commandService = new CommandService(this);
+    private final UtilityService utilityService = new UtilityService(this);
+    private final ConfigService configService = new ConfigService(this);
 
-    // saved lists
-    public ArrayList<Coinpurse> coinpurses = new ArrayList<>();
+    private final ArrayList<Coinpurse> coinpurses = new ArrayList<>();
 
     @Override
     public void onEnable() {
         System.out.println(getConfig().getString("enablingText"));
 
-        localUtilityService.ensureSmoothTransitionBetweenVersions();
+        utilityService.ensureSmoothTransitionBetweenVersions();
 
         // config creation/loading
         if (!(new File("./plugins/MedievalEconomy/config.yml").exists())) {
-            config.saveConfigDefaults();
+            configService.saveConfigDefaults();
         }
         else {
             // check version
             if (!getConfig().getString("version").equalsIgnoreCase(pluginVersion)) {
-                config.handleVersionMismatch();
+                configService.handleVersionMismatch();
             }
             reloadConfig();
         }
 
         this.getServer().getPluginManager().registerEvents(this, this);
         if (new File("./plugins/MedievalEconomy/config.yml").exists()) {
-            storage.load();
+            storageService.load();
         }
         else {
-            storage.legacyLoadCoinpurses();
+            storageService.legacyLoadCoinpurses();
         }
 
         int pluginId = 8998;
@@ -72,12 +70,12 @@ public final class MedievalEconomy extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         System.out.println(getConfig().getString("disablingText"));
-        storage.save();
+        storageService.save();
         System.out.println(getConfig().getString("disabledText"));
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        return commands.interpretCommand(sender, label, args);
+        return commandService.interpretCommand(sender, label, args);
     }
 
     @EventHandler()
@@ -118,5 +116,17 @@ public final class MedievalEconomy extends JavaPlugin implements Listener {
 
     public String getVersion() {
         return pluginVersion;
+    }
+
+    public StorageService getStorageService() {
+        return storageService;
+    }
+
+    public UtilityService getUtilityService() {
+        return utilityService;
+    }
+
+    public ArrayList<Coinpurse> getCoinpurses() {
+        return coinpurses;
     }
 }
