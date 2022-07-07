@@ -7,8 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class BalanceCommand {
-
-    MedievalEconomy medievalEconomy = null;
+    private final MedievalEconomy medievalEconomy;
 
     public BalanceCommand(MedievalEconomy plugin) {
         medievalEconomy = plugin;
@@ -21,7 +20,7 @@ public class BalanceCommand {
             // permission check
             if (player.hasPermission("medievaleconomy.balance") || player.hasPermission("medievaleconomy.default")) {
 
-                Coinpurse purse = medievalEconomy.localUtilityService.getPlayersCoinPurse(player.getUniqueId());
+                Coinpurse purse = medievalEconomy.getUtilityService().getPlayersCoinPurse(player.getUniqueId());
 
                 if (purse != null) {
 

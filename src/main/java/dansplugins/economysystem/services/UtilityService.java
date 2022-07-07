@@ -13,11 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class LocalUtilityService {
+public class UtilityService {
+    private final MedievalEconomy medievalEconomy;
 
-    MedievalEconomy medievalEconomy = null;
-
-    public LocalUtilityService(MedievalEconomy plugin) {
+    public UtilityService(MedievalEconomy plugin) {
         medievalEconomy = plugin;
     }
 
@@ -63,7 +62,7 @@ public class LocalUtilityService {
     }
 
     public boolean hasCoinpurse(UUID uuid) {
-        for (Coinpurse purse : medievalEconomy.coinpurses) {
+        for (Coinpurse purse : medievalEconomy.getCoinpurses()) {
             if (purse.getPlayerUUID().equals(uuid)) {
                 return true;
             }
@@ -72,7 +71,7 @@ public class LocalUtilityService {
     }
 
     public Coinpurse getPlayersCoinPurse(UUID uuid) {
-        for (Coinpurse purse : medievalEconomy.coinpurses) {
+        for (Coinpurse purse : medievalEconomy.getCoinpurses()) {
             if (purse.getPlayerUUID().equals(uuid)) {
                 return purse;
             }
@@ -96,8 +95,8 @@ public class LocalUtilityService {
                 deleteLegacyFiles(oldFolder);
 
                 // load in old saves and save them with new format
-                medievalEconomy.storage.legacyLoadCoinpurses();
-                medievalEconomy.storage.save();
+                medievalEconomy.getStorageService().legacyLoadCoinpurses();
+                medievalEconomy.getStorageService().save();
             }
 
         }

@@ -5,7 +5,7 @@ main: dansplugins.economysystem.MedievalEconomy
 api-version: "1.15"
 
 commands:
-  econ:
+  medievaleconomy:
   balance:
   deposit:
   withdraw:

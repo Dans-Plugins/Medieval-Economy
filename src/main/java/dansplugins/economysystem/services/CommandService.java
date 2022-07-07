@@ -7,11 +7,10 @@ import dansplugins.economysystem.commands.EconCommand;
 import dansplugins.economysystem.commands.WithdrawCommand;
 import org.bukkit.command.CommandSender;
 
-public class LocalCommandService {
+public class CommandService {
+    private final MedievalEconomy medievalEconomy;
 
-    MedievalEconomy medievalEconomy = null;
-
-    public LocalCommandService(MedievalEconomy plugin) {
+    public CommandService(MedievalEconomy plugin) {
         medievalEconomy = plugin;
     }
 

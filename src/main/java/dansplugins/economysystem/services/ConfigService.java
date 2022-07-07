@@ -4,11 +4,10 @@ import dansplugins.economysystem.MedievalEconomy;
 
 import java.io.File;
 
-public class LocalConfigService {
+public class ConfigService {
+    private final MedievalEconomy medievalEconomy;
 
-    MedievalEconomy medievalEconomy = null;
-
-    public LocalConfigService(MedievalEconomy plugin) {
+    public ConfigService(MedievalEconomy plugin) {
         medievalEconomy = plugin;
     }
 

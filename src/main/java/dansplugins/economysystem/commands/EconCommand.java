@@ -6,8 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class EconCommand {
-
-    MedievalEconomy medievalEconomy = null;
+    private final MedievalEconomy medievalEconomy;
 
     public EconCommand(MedievalEconomy plugin) {
         medievalEconomy = plugin;
@@ -18,7 +17,7 @@ public class EconCommand {
 
             if (args[0].equalsIgnoreCase("help")) {
                 if (sender instanceof Player) {
-                    medievalEconomy.localUtilityService.sendHelpMessage((Player) sender);
+                    medievalEconomy.getUtilityService().sendHelpMessage((Player) sender);
                 }
             }
 
@@ -28,10 +27,10 @@ public class EconCommand {
                     if (player.hasPermission("medievaleconomy.createcurrency") || player.hasPermission("medievaleconomy.admin")) {
 
                         if (args.length == 1) {
-                            medievalEconomy.localUtilityService.addCurrencyToInventory(player, 1);
+                            medievalEconomy.getUtilityService().addCurrencyToInventory(player, 1);
                         }
                         else {
-                            medievalEconomy.localUtilityService.addCurrencyToInventory(player, Integer.parseInt(args[1]));
+                            medievalEconomy.getUtilityService().addCurrencyToInventory(player, Integer.parseInt(args[1]));
                         }
 
                     }
@@ -65,7 +64,7 @@ public class EconCommand {
         }
         else {
             if (sender instanceof Player) {
-                medievalEconomy.localUtilityService.sendHelpMessage((Player) sender);
+                medievalEconomy.getUtilityService().sendHelpMessage((Player) sender);
             }
         }
     }

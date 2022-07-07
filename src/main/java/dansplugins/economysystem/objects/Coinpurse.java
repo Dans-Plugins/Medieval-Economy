@@ -10,8 +10,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 public class Coinpurse {
-
-    MedievalEconomy medievalEconomy = null;
+    private final MedievalEconomy medievalEconomy;
 
     public Coinpurse(MedievalEconomy plugin) {
         medievalEconomy = plugin;
