@@ -1,14 +1,17 @@
-package dansplugins.economysystem.eventhandlers;
+package dansplugins.economysystem.listeners;
 
 import dansplugins.economysystem.MedievalEconomy;
 import dansplugins.economysystem.objects.Coinpurse;
 import org.bukkit.ChatColor;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-public class PlayerDeathEventHandler {
+/**
+ * @author Daniel McCoy Stephenson
+ */
+public class DeathListener {
     private final MedievalEconomy medievalEconomy;
 
-    public PlayerDeathEventHandler(MedievalEconomy plugin) {
+    public DeathListener(MedievalEconomy plugin) {
         medievalEconomy = plugin;
     }
 

@@ -1,8 +1,8 @@
 package dansplugins.economysystem;
 
 import dansplugins.economysystem.bStats.Metrics;
-import dansplugins.economysystem.eventhandlers.PlayerDeathEventHandler;
-import dansplugins.economysystem.eventhandlers.PlayerJoinEventHandler;
+import dansplugins.economysystem.listeners.DeathListener;
+import dansplugins.economysystem.listeners.JoinListener;
 import dansplugins.economysystem.objects.Coinpurse;
 import dansplugins.economysystem.services.CommandService;
 import dansplugins.economysystem.services.ConfigService;
@@ -25,6 +25,9 @@ import java.util.UUID;
 import static org.bukkit.Bukkit.getOfflinePlayers;
 import static org.bukkit.Bukkit.getOnlinePlayers;
 
+/**
+ * @author Daniel McCoy Stephenson
+ */
 public final class MedievalEconomy extends JavaPlugin implements Listener {
     private final String pluginVersion = "v" + getDescription().getVersion();
 
@@ -80,13 +83,13 @@ public final class MedievalEconomy extends JavaPlugin implements Listener {
 
     @EventHandler()
     public void onJoin(PlayerJoinEvent event) {
-        PlayerJoinEventHandler handler = new PlayerJoinEventHandler(this);
+        JoinListener handler = new JoinListener(this);
         handler.handle(event);
     }
 
     @EventHandler()
     public void onDeath(PlayerDeathEvent event) {
-        PlayerDeathEventHandler handler = new PlayerDeathEventHandler(this);
+        DeathListener handler = new DeathListener(this);
         handler.handle(event);
     }
 

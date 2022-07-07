@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.UUID;
 
+/**
+ * @author Daniel McCoy Stephenson
+ */
 public class Coinpurse {
     private final MedievalEconomy medievalEconomy;
 

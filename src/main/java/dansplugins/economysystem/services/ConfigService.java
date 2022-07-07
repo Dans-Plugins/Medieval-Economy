@@ -4,6 +4,9 @@ import dansplugins.economysystem.MedievalEconomy;
 
 import java.io.File;
 
+/**
+ * @author Daniel McCoy Stephenson
+ */
 public class ConfigService {
     private final MedievalEconomy medievalEconomy;
 

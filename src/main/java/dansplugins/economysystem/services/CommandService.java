@@ -7,6 +7,9 @@ import dansplugins.economysystem.commands.EconCommand;
 import dansplugins.economysystem.commands.WithdrawCommand;
 import org.bukkit.command.CommandSender;
 
+/**
+ * @author Daniel McCoy Stephenson
+ */
 public class CommandService {
     private final MedievalEconomy medievalEconomy;
 

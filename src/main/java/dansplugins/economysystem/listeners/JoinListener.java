@@ -1,4 +1,4 @@
-package dansplugins.economysystem.eventhandlers;
+package dansplugins.economysystem.listeners;
 
 import dansplugins.economysystem.MedievalEconomy;
 import dansplugins.economysystem.objects.Coinpurse;
@@ -8,10 +8,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class PlayerJoinEventHandler {
+/**
+ * @author Daniel McCoy Stephenson
+ */
+public class JoinListener {
     private final MedievalEconomy medievalEconomy;
 
-    public PlayerJoinEventHandler(MedievalEconomy plugin) {
+    public JoinListener(MedievalEconomy plugin) {
         medievalEconomy = plugin;
     }
 

@@ -9,6 +9,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * @author Daniel McCoy Stephenson
+ */
 public class StorageService {
     private final MedievalEconomy medievalEconomy;
 
