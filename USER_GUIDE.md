@@ -17,6 +17,14 @@ Medieval Economy is a Spigot plugin that adds a physical coin-based currency sys
 3. Deposit coins from your inventory into your coinpurse: `/deposit <amount>`
 4. Withdraw coins from your coinpurse into your inventory: `/withdraw <amount>`
 
+## Starter Kit
+
+The first time a player joins, they're given 50 gold coins, 10 bread, and a book, and a coinpurse is created for them.
+
+## Death Penalty
+
+When a player with coins in their coinpurse dies, 10% of their coinpurse (or 1 coin if their balance is below 10) is removed and dropped on the ground as physical coins.
+
 ## Permissions
 
 | Permission | Default | Description |
