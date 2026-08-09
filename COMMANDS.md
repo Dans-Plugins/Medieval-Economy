@@ -2,7 +2,7 @@
 
 | Command | Permission | Description |
 |---------|------------|-------------|
-| `/econ help` | `medievaleconomy.default` | Show the help menu. |
+| `/econ help` | *(none)* | Show the help menu. |
 | `/econ createcurrency [amount]` | `medievaleconomy.createcurrency` | Give yourself `amount` coins (default 1). |
 | `/econ reload` | `medievaleconomy.reload` | Reload the plugin configuration. |
 | `/balance` | `medievaleconomy.balance` | Display how many coins are in your coinpurse. |

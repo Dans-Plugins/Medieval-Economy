@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Fixed
+- Every permission node the plugin checks is now declared in `plugin.yml`. Undeclared nodes fall back to Bukkit's op-only default, so `/balance`, `/deposit` and `/withdraw` were unusable by ordinary players on servers without a permissions plugin. The declared defaults match the table in `USER_GUIDE.md`, and `medievaleconomy.admin` now genuinely grants every other node. Explicit grants made through a permissions plugin are unaffected.
+- `COMMANDS.md` no longer lists `medievaleconomy.default` against `/econ help`; that subcommand has never been permission-gated.
+
+### Added
+- Each command declared in `plugin.yml` now carries a description and a usage string, so the server's own `/help` output describes them.
+
 ## [2.0.0-SNAPSHOT-8-8-2026] – 2026-08-08
 
 ### Changed

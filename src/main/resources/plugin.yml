@@ -6,6 +6,45 @@ api-version: "1.15"
 
 commands:
   econ:
+    description: Show the help menu and administer the economy.
+    usage: /econ help
   balance:
+    description: Display how many coins are in your coinpurse.
+    usage: /balance
   deposit:
+    description: Move coins from your inventory into your coinpurse.
+    usage: /deposit <amount>
   withdraw:
+    description: Move coins from your coinpurse into your inventory.
+    usage: /withdraw <amount>
+
+permissions:
+  medievaleconomy.default:
+    description: Grants balance, deposit, and withdraw access.
+    default: true
+    children:
+      medievaleconomy.balance: true
+      medievaleconomy.deposit: true
+      medievaleconomy.withdraw: true
+  medievaleconomy.balance:
+    description: Check coinpurse balance.
+    default: true
+  medievaleconomy.deposit:
+    description: Deposit coins into your coinpurse.
+    default: true
+  medievaleconomy.withdraw:
+    description: Withdraw coins from your coinpurse.
+    default: true
+  medievaleconomy.createcurrency:
+    description: Create coin items.
+    default: op
+  medievaleconomy.reload:
+    description: Reload the plugin config.
+    default: op
+  medievaleconomy.admin:
+    description: Grants all permissions.
+    default: op
+    children:
+      medievaleconomy.default: true
+      medievaleconomy.createcurrency: true
+      medievaleconomy.reload: true
