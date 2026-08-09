@@ -8,7 +8,9 @@ import org.junit.Test;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,7 +27,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class PluginDescriptionTest {
 
-    private static final List<String> COMMAND_NAMES = Arrays.asList("econ", "balance", "deposit", "withdraw");
+    private static final Set<String> EXPECTED_COMMANDS =
+            new TreeSet<String>(Arrays.asList("econ", "balance", "deposit", "withdraw"));
 
     private YamlConfiguration description;
 
@@ -46,8 +49,13 @@ public class PluginDescriptionTest {
     }
 
     @Test
-    public void everyCommand_isDeclaredWithADescriptionAndUsage() {
-        for (String name : COMMAND_NAMES) {
+    public void exactlyTheDocumentedCommands_areDeclared() {
+        assertEquals(EXPECTED_COMMANDS, new TreeSet<String>(commands().getKeys(false)));
+    }
+
+    @Test
+    public void everyDeclaredCommand_carriesADescriptionAndUsage() {
+        for (String name : commands().getKeys(false)) {
             ConfigurationSection command = command(name);
             assertNotNull("/" + name + " has no description", command.getString("description"));
             assertNotNull("/" + name + " has no usage", command.getString("usage"));
@@ -60,8 +68,8 @@ public class PluginDescriptionTest {
      * the handlers send themselves.
      */
     @Test
-    public void noCommand_isGatedAtTheManifestLevel() {
-        for (String name : COMMAND_NAMES) {
+    public void noDeclaredCommand_isGatedAtTheManifestLevel() {
+        for (String name : commands().getKeys(false)) {
             assertNull("/" + name + " declares a permission", command(name).getString("permission"));
         }
     }
@@ -73,24 +81,29 @@ public class PluginDescriptionTest {
      */
     @Test
     public void everyDocumentedNode_isDeclaredWithItsDocumentedDefault() {
-        assertPermissionDefault("medievaleconomy.default", "true");
-        assertPermissionDefault("medievaleconomy.balance", "true");
-        assertPermissionDefault("medievaleconomy.deposit", "true");
-        assertPermissionDefault("medievaleconomy.withdraw", "true");
-        assertPermissionDefault("medievaleconomy.createcurrency", "op");
-        assertPermissionDefault("medievaleconomy.reload", "op");
-        assertPermissionDefault("medievaleconomy.admin", "op");
+        assertDeclaredDefault("medievaleconomy.default", "true");
+        assertDeclaredDefault("medievaleconomy.balance", "true");
+        assertDeclaredDefault("medievaleconomy.deposit", "true");
+        assertDeclaredDefault("medievaleconomy.withdraw", "true");
+        assertDeclaredDefault("medievaleconomy.createcurrency", "op");
+        assertDeclaredDefault("medievaleconomy.reload", "op");
+        assertDeclaredDefault("medievaleconomy.admin", "op");
     }
 
+    /**
+     * The effective grant, resolved the way Bukkit resolves it: a node is held either
+     * because its own default says so or because some node that is held grants it as a
+     * child. This is the property players actually experience.
+     */
     @Test
     public void ordinaryPlayers_holdTheEverydayNodesAndNotTheAdministrativeOnes() {
-        assertGrantedToNonOp("medievaleconomy.default", true);
-        assertGrantedToNonOp("medievaleconomy.balance", true);
-        assertGrantedToNonOp("medievaleconomy.deposit", true);
-        assertGrantedToNonOp("medievaleconomy.withdraw", true);
-        assertGrantedToNonOp("medievaleconomy.createcurrency", false);
-        assertGrantedToNonOp("medievaleconomy.reload", false);
-        assertGrantedToNonOp("medievaleconomy.admin", false);
+        assertHeldByOrdinaryPlayers("medievaleconomy.default", true);
+        assertHeldByOrdinaryPlayers("medievaleconomy.balance", true);
+        assertHeldByOrdinaryPlayers("medievaleconomy.deposit", true);
+        assertHeldByOrdinaryPlayers("medievaleconomy.withdraw", true);
+        assertHeldByOrdinaryPlayers("medievaleconomy.createcurrency", false);
+        assertHeldByOrdinaryPlayers("medievaleconomy.reload", false);
+        assertHeldByOrdinaryPlayers("medievaleconomy.admin", false);
     }
 
     @Test
@@ -118,7 +131,7 @@ public class PluginDescriptionTest {
 
     private ConfigurationSection command(String name) {
         ConfigurationSection command = commands().getConfigurationSection(name);
-        assertNotNull("/" + name + " is not declared in plugin.yml", command);
+        assertNotNull("/" + name + " has no configuration block in plugin.yml", command);
         return command;
     }
 
@@ -134,14 +147,30 @@ public class PluginDescriptionTest {
         return node;
     }
 
-    private void assertPermissionDefault(String name, String expected) {
-        assertEquals(name + " has the wrong default", expected,
-                String.valueOf(permission(name).get("default")));
+    private String declaredDefault(String name) {
+        return String.valueOf(permission(name).get("default"));
     }
 
-    private void assertGrantedToNonOp(String name, boolean expected) {
-        boolean granted = "true".equals(String.valueOf(permission(name).get("default")));
-        assertEquals(name + " is granted to ordinary players", expected, granted);
+    private void assertDeclaredDefault(String name, String expected) {
+        assertEquals(name + " has the wrong default", expected, declaredDefault(name));
+    }
+
+    private void assertHeldByOrdinaryPlayers(String name, boolean expected) {
+        assertEquals(name + " is held by ordinary players", expected, heldByOrdinaryPlayers(name));
+    }
+
+    private boolean heldByOrdinaryPlayers(String name) {
+        if ("true".equals(declaredDefault(name))) {
+            return true;
+        }
+        for (String other : permissions().getKeys(false)) {
+            if (!other.equals(name)
+                    && "true".equals(declaredDefault(other))
+                    && grantedBy(other, name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void assertGrantedBy(String parentName, String targetName) {
@@ -149,6 +178,15 @@ public class PluginDescriptionTest {
     }
 
     private boolean grantedBy(String parentName, String targetName) {
+        return grantedBy(parentName, targetName, new HashSet<String>());
+    }
+
+    private boolean grantedBy(String parentName, String targetName, Set<String> visited) {
+        // a malformed manifest could declare a cycle; without this the recursion would
+        // blow the stack instead of reporting a missing grant
+        if (!visited.add(parentName)) {
+            return false;
+        }
         ConfigurationSection parent = permissions().getConfigurationSection(parentName);
         if (parent == null) {
             return false;
@@ -161,7 +199,7 @@ public class PluginDescriptionTest {
             if (!children.getBoolean(child)) {
                 continue;
             }
-            if (child.equals(targetName) || grantedBy(child, targetName)) {
+            if (child.equals(targetName) || grantedBy(child, targetName, visited)) {
                 return true;
             }
         }
