@@ -1,6 +1,7 @@
 package dansplugins.economysystem.commands;
 
 import dansplugins.economysystem.MedievalEconomy;
+import dansplugins.economysystem.objects.AmountArgument;
 import dansplugins.economysystem.objects.Coinpurse;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -28,20 +29,20 @@ public class DepositCommand {
                 // args check
                 if (args.length > 0) {
 
-                    int amount = 0;
-
                     // get args[0]
-                    try {
-                        amount = Integer.parseInt(args[0]);
-                    } catch(Exception e) {
+                    AmountArgument argument = AmountArgument.parse(args[0]);
+
+                    if (!argument.isNumeric()) {
                         player.sendMessage(ChatColor.RED + medievalEconomy.getConfig().getString("depositUsageText"));
                         return;
                     }
 
-                    if (amount < 0) {
+                    if (!argument.isPositive()) {
                         player.sendMessage(ChatColor.RED + medievalEconomy.getConfig().getString("depositPositiveText"));
                         return;
                     }
+
+                    int amount = argument.getValue();
 
                     // enough coins check
                     if (player.getInventory().containsAtLeast(medievalEconomy.getUtilityService().getCurrency(1), amount)) {

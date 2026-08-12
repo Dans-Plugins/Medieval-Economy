@@ -53,8 +53,9 @@ public class ConfigService {
         medievalEconomy.getConfig().addDefault("depositTextStart", "You open your coinpurse and deposit ");
         medievalEconomy.getConfig().addDefault("depositTextEnd", " coins.");
         medievalEconomy.getConfig().addDefault("depositNotEnoughCoins", "You don't have that many coins!");
-        medievalEconomy.getConfig().addDefault("depositUsageText", "Usage: /deposit (number)");
         medievalEconomy.getConfig().addDefault("depositNoPermission", "Sorry! In order to use this command, you need the permission 'medievaleconomy.deposit'");
+        medievalEconomy.getConfig().addDefault("createCurrencyUsageText", "Usage: /econ createcurrency (whole number)");
+        medievalEconomy.getConfig().addDefault("createCurrencyPositiveText", "Number must be positive!");
         medievalEconomy.getConfig().addDefault("createCurrencyNoPermission", "You need the following permission to use this command: 'medievaleconomy.createcurrency'");
         medievalEconomy.getConfig().addDefault("createCurrencyNoRunFromConsole", "You can't run this command from the console!");
         medievalEconomy.getConfig().addDefault("configReloadedText", "Config reloaded!");

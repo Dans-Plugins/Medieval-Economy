@@ -1,6 +1,7 @@
 package dansplugins.economysystem.commands;
 
 import dansplugins.economysystem.MedievalEconomy;
+import dansplugins.economysystem.objects.AmountArgument;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -33,7 +34,19 @@ public class EconCommand {
                             medievalEconomy.getUtilityService().addCurrencyToInventory(player, 1);
                         }
                         else {
-                            medievalEconomy.getUtilityService().addCurrencyToInventory(player, Integer.parseInt(args[1]));
+                            AmountArgument argument = AmountArgument.parse(args[1]);
+
+                            if (!argument.isNumeric()) {
+                                player.sendMessage(ChatColor.RED + medievalEconomy.getConfig().getString("createCurrencyUsageText"));
+                                return;
+                            }
+
+                            if (!argument.isPositive()) {
+                                player.sendMessage(ChatColor.RED + medievalEconomy.getConfig().getString("createCurrencyPositiveText"));
+                                return;
+                            }
+
+                            medievalEconomy.getUtilityService().addCurrencyToInventory(player, argument.getValue());
                         }
 
                     }
