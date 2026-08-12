@@ -9,7 +9,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - A `Dev Release` workflow, which republishes a rolling `dev` prerelease of `main` on every non-documentation push. This is what Dan's Plugin Manager's experimental channel installs from: `/dpm get medievaleconomy --experimental` reads `releases/tags/dev`, so without it there is nothing for that command to download. The prerelease is unreleased, unreviewed code and is marked as such.
-
 - Each command declared in `plugin.yml` now carries a description and a usage string, so the server's own `/help` output describes them.
 - `/econ createcurrency` now answers a non-numeric amount with a usage hint and an amount below 1 with a refusal, instead of throwing out of the command handler. Both messages are configurable through the new `createCurrencyUsageText` and `createCurrencyPositiveText` keys.
 
