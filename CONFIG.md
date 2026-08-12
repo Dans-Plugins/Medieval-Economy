@@ -14,6 +14,8 @@ The configuration file is generated at `plugins/MedievalEconomy/config.yml` on f
 | `compatibilityText` | `[ALERT] Old save folder name (pre v3.2) detected. Updating for compatibility.` | Console message shown when migrating saves from the pre-v3.2 folder name. |
 | `configReloadedText` | `Config reloaded!` | Message shown after `/econ reload` succeeds. |
 | `reloadNoPermission` | `You need the following permission to use this command: 'medievaleconomy.reload'` | Error shown when `/econ reload` is used without permission. |
+| `createCurrencyUsageText` | `Usage: /econ createcurrency (whole number)` | Usage hint shown when `/econ createcurrency` is given something other than a whole number. |
+| `createCurrencyPositiveText` | `Number must be positive!` | Error when `/econ createcurrency` is given an amount below 1. |
 | `createCurrencyNoPermission` | `You need the following permission to use this command: 'medievaleconomy.createcurrency'` | Error shown when `/econ createcurrency` is used without permission. |
 | `createCurrencyNoRunFromConsole` | `You can't run this command from the console!` | Error shown when `/econ createcurrency` is run from the console. |
 | `currencyItemName` | `Gold Coin` | Display name of the coin item. |
