@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- Death, `/deposit` and `/withdraw` no longer throw a `NullPointerException` for a player who holds no coinpurse. A coinpurse is normally assigned on join, but a record that failed to load leaves the player without one, and those three paths used the lookup result without checking it. An empty coinpurse is now created on demand instead, so the player is told what happened rather than the console receiving a stack trace.
+- A stored coinpurse whose player UUID is null no longer breaks every coinpurse lookup after it. Such a record is produced when an upgrade from a pre-v0.7 save resolves a player name the server no longer knows, and the lookup used to compare from the stored UUID rather than the requested one. That record is now skipped.
 - The `Dev Release` workflow now retries publishing the `dev` prerelease before giving up. The release and its tag have to be deleted and recreated for the tag to move to the new commit, and a transient API failure inside that window previously left the repository with no `dev` release at all until the workflow was re-run by hand. Each attempt now starts from a clean slate, and an exhausted retry fails loudly.
 
 ### Added

@@ -48,7 +48,7 @@ public class DepositCommand {
                     if (player.getInventory().containsAtLeast(medievalEconomy.getUtilityService().getCurrency(1), amount)) {
 
                         // add coins to coinpurse
-                        Coinpurse purse = medievalEconomy.getUtilityService().getPlayersCoinPurse(player.getUniqueId());
+                        Coinpurse purse = medievalEconomy.getUtilityService().getOrCreateCoinpurse(player.getUniqueId());
                         purse.addCoins(amount);
 
                         // delete coins from inventory

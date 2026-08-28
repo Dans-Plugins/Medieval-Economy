@@ -65,21 +65,53 @@ public class UtilityService {
     }
 
     public boolean hasCoinpurse(UUID uuid) {
-        for (Coinpurse purse : medievalEconomy.getCoinpurses()) {
-            if (purse.getPlayerUUID().equals(uuid)) {
-                return true;
-            }
-        }
-        return false;
+        return findCoinpurse(medievalEconomy.getCoinpurses(), uuid) != null;
     }
 
     public Coinpurse getPlayersCoinPurse(UUID uuid) {
-        for (Coinpurse purse : medievalEconomy.getCoinpurses()) {
-            if (purse.getPlayerUUID().equals(uuid)) {
+        return findCoinpurse(medievalEconomy.getCoinpurses(), uuid);
+    }
+
+    /**
+     * Returns the coinpurse held for the given player, creating and registering an empty one
+     * if none is held yet. A coinpurse is normally assigned when the player joins, but a record
+     * that failed to load leaves the player without one, and the callers of this method would
+     * otherwise dereference null.
+     */
+    public Coinpurse getOrCreateCoinpurse(UUID uuid) {
+        return findOrCreateCoinpurse(medievalEconomy.getCoinpurses(), uuid, medievalEconomy);
+    }
+
+    /**
+     * The comparison runs from the requested UUID rather than the stored one: a coinpurse whose
+     * UUID is null is a state the plugin can reach, since legacyLoad assigns whatever
+     * findUUIDBasedOnPlayerName returned and that is null for a name no longer known to the server.
+     */
+    static Coinpurse findCoinpurse(List<Coinpurse> coinpurses, UUID uuid) {
+        if (uuid == null) {
+            return null;
+        }
+        for (Coinpurse purse : coinpurses) {
+            if (uuid.equals(purse.getPlayerUUID())) {
                 return purse;
             }
         }
         return null;
+    }
+
+    static Coinpurse findOrCreateCoinpurse(List<Coinpurse> coinpurses, UUID uuid, MedievalEconomy plugin) {
+        Coinpurse existing = findCoinpurse(coinpurses, uuid);
+        if (existing != null) {
+            return existing;
+        }
+        Coinpurse purse = new Coinpurse(plugin);
+        purse.setPlayerUUID(uuid);
+        if (uuid != null) {
+            // a purse registered under a null UUID would be unreachable by lookup and would save
+            // itself to a file named "null.txt", so it is handed back unregistered instead
+            coinpurses.add(purse);
+        }
+        return purse;
     }
 
     public void ensureSmoothTransitionBetweenVersions() {

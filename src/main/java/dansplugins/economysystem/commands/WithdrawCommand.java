@@ -44,7 +44,7 @@ public class WithdrawCommand {
 
                     int amount = argument.getValue();
 
-                    Coinpurse purse = medievalEconomy.getUtilityService().getPlayersCoinPurse(player.getUniqueId());
+                    Coinpurse purse = medievalEconomy.getUtilityService().getOrCreateCoinpurse(player.getUniqueId());
 
                     // enough coins check
                     if (purse.containsAtLeast(amount)) {
