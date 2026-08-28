@@ -68,15 +68,17 @@ public class StorageService {
                 Coinpurse temp = new Coinpurse(medievalEconomy);
                 temp.load(nextName);
 
-                // existence check
-                int index = -1;
-                for (int i = 0; i < medievalEconomy.getCoinpurses().size(); i++) {
-                    if (medievalEconomy.getCoinpurses().get(i).getPlayerUUID().equals(temp.getPlayerUUID())) {
-                        index = i;
-                    }
+                if (temp.getPlayerUUID() == null) {
+                    // the record named in the index could not be read, so this coinpurse carries no
+                    // identity. Keeping it would break every later lookup and, worse, abort the
+                    // filename save on shutdown before any balance had been written.
+                    continue;
                 }
-                if (index != -1) {
-                    medievalEconomy.getCoinpurses().remove(index);
+
+                // existence check
+                Coinpurse existing = UtilityService.findCoinpurse(medievalEconomy.getCoinpurses(), temp.getPlayerUUID());
+                if (existing != null) {
+                    medievalEconomy.getCoinpurses().remove(existing);
                 }
 
                 medievalEconomy.getCoinpurses().add(temp);
@@ -100,6 +102,13 @@ public class StorageService {
                 String nextName = loadReader.nextLine();
                 Coinpurse temp = new Coinpurse(medievalEconomy);
                 temp.legacyLoad(nextName);
+
+                if (temp.getPlayerUUID() == null) {
+                    // legacyLoad resolves a player name the server may no longer know, and returns
+                    // null when it cannot. The coins are unattributable either way, so the record is
+                    // dropped rather than left to break lookups and the shutdown save.
+                    continue;
+                }
 
                 medievalEconomy.getCoinpurses().add(temp);
             }

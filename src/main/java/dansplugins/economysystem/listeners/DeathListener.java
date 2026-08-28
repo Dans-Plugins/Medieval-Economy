@@ -16,7 +16,7 @@ public class DeathListener {
     }
 
     public void handle(PlayerDeathEvent event) {
-        Coinpurse purse = medievalEconomy.getUtilityService().getPlayersCoinPurse(event.getEntity().getUniqueId());
+        Coinpurse purse = medievalEconomy.getUtilityService().getOrCreateCoinpurse(event.getEntity().getUniqueId());
 
         if (purse.getCoins() != 0) {
 
