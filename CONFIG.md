@@ -25,6 +25,7 @@ The configuration file is generated at `plugins/MedievalEconomy/config.yml` on f
 | `titleSeparator` | `true` | Whether to display a blank separator line before the lore text on the coin item. |
 | `balanceTextStart` | `You have ` | Text prefix for the balance message. |
 | `balanceTextEnd` | ` coins in your coinpurse.` | Text suffix for the balance message. |
+| `balanceNoCoinpurse` | `No coinpurse could be found for you. One will be created when you next deposit coins.` | Message shown when `/balance` is run by a player who holds no coinpurse. |
 | `balanceNoPermission` | `Sorry! In order to run this command, you need the following permission: 'medievaleconomy.balance'` | Error shown when `/balance` is used without permission. |
 | `depositUsageText` | `Usage: /deposit (whole number)` | Usage hint shown on bad deposit input. |
 | `depositPositiveText` | `Number must be positive!` | Error when a non-positive amount is provided. |

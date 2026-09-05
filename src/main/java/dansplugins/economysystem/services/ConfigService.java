@@ -47,6 +47,7 @@ public class ConfigService {
         medievalEconomy.getConfig().addDefault("coinpurseLoadErrorText", "An error occurred loading ");
         medievalEconomy.getConfig().addDefault("balanceTextStart", "You have ");
         medievalEconomy.getConfig().addDefault("balanceTextEnd", " coins in your coinpurse.");
+        medievalEconomy.getConfig().addDefault("balanceNoCoinpurse", "No coinpurse could be found for you. One will be created when you next deposit coins.");
         medievalEconomy.getConfig().addDefault("balanceNoPermission", "Sorry! In order to run this command, you need the following permission: 'medievaleconomy.balance'");
         medievalEconomy.getConfig().addDefault("depositUsageText", "Usage: /deposit (whole number)");
         medievalEconomy.getConfig().addDefault("depositPositiveText", "Number must be positive!");

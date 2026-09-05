@@ -25,13 +25,10 @@ public class BalanceCommand {
 
                 Coinpurse purse = medievalEconomy.getUtilityService().getPlayersCoinPurse(player.getUniqueId());
 
-                if (purse != null) {
-
-                    int num = purse.getCoins();
-
-                    player.sendMessage(ChatColor.GREEN + medievalEconomy.getConfig().getString("balanceTextStart") + num + medievalEconomy.getConfig().getString("balanceTextEnd"));
-
-                }
+                player.sendMessage(composeBalanceMessage(purse,
+                        medievalEconomy.getConfig().getString("balanceTextStart"),
+                        medievalEconomy.getConfig().getString("balanceTextEnd"),
+                        medievalEconomy.getConfig().getString("balanceNoCoinpurse")));
 
             }
             else {
@@ -39,6 +36,20 @@ public class BalanceCommand {
             }
 
         }
+    }
+
+    /**
+     * Builds what /balance answers with, for a coinpurse that may be absent. Every other outcome of
+     * the command produces a message, so a missing coinpurse is told apart from an empty one rather
+     * than being left unanswered — silence is indistinguishable from the command failing to register.
+     *
+     * @param purse the player's coinpurse, or null if none is held
+     */
+    static String composeBalanceMessage(Coinpurse purse, String start, String end, String noCoinpurse) {
+        if (purse == null) {
+            return ChatColor.RED + noCoinpurse;
+        }
+        return ChatColor.GREEN + start + purse.getCoins() + end;
     }
 
 }
