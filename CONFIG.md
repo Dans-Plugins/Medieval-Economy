@@ -45,3 +45,20 @@ The configuration file is generated at `plugins/MedievalEconomy/config.yml` on f
 | `coinpurseLoadErrorText` | `An error occurred loading ` | Console message prefix shown when a single coinpurse fails to load. |
 | `storageSaveError` | `An error occurred while saving coinpurse record filenames.` | Console message shown when the coinpurse filename index fails to save. |
 | `storageLoadError` | `Error loading the coinpurse records!` | Console message shown when the coinpurse filename index fails to load. |
+| `usage-reporting.enabled` | `true` | Whether the plugin reports usage events (see below). Set to `false` to turn it off. |
+| `usage-reporting.endpoint` | `https://trace.danielstephenson.dev` | The trace server events are sent to. |
+| `usage-reporting.key` | `v9jS7yhG5qIdX8rvSNGNTJvfIHQMe5jPy4Xt5J0UBpA` | Identifies this plugin to the trace server so reports are attributed to it. Not a secret: it ships in the default config and can only report as MedievalEconomy. Empty means reporting is off regardless of `enabled`. |
+
+## Usage reporting
+
+When the plugin is enabled, and each time one of its commands is used, a small event is sent to the
+author's [trace](https://github.com/Stephenson-Software/trace-client-java) server so it is known which
+plugins are actually in use. An event carries the plugin's name, the event name (`startup` or
+`command`), and either the plugin version or the command name — nothing about players, the world, or
+the server. Sending happens off the main thread, never delays a tick, and is dropped silently if the
+server cannot be reached. Set `usage-reporting.enabled` to `false` to turn it off.
+
+A `config.yml` written by a version before usage reporting has no `usage-reporting` block, and the
+plugin never rewrites an existing file. The three keys are read from the copy bundled in the jar
+whenever the file on disk lacks them, so reporting is active on upgraded servers too unless it is
+turned off; adding the block to `config.yml` is only needed to change a value.
