@@ -8,6 +8,7 @@ import dansplugins.economysystem.services.CommandService;
 import dansplugins.economysystem.services.ConfigService;
 import dansplugins.economysystem.services.StorageService;
 import dansplugins.economysystem.services.UtilityService;
+import dansplugins.economysystem.trace.TraceClient;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -20,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 
 import static org.bukkit.Bukkit.getOfflinePlayers;
@@ -37,6 +39,10 @@ public final class MedievalEconomy extends JavaPlugin implements Listener {
     private final ConfigService configService = new ConfigService(this);
 
     private final ArrayList<Coinpurse> coinpurses = new ArrayList<>();
+
+    // A no-op until the config has been read, so a command arriving before
+    // onEnable() finishes has something safe to report to.
+    private TraceClient trace = TraceClient.disabled();
 
     @Override
     public void onEnable() {
@@ -67,17 +73,28 @@ public final class MedievalEconomy extends JavaPlugin implements Listener {
         int pluginId = 8998;
         Metrics metrics = new Metrics(this, pluginId);
 
+        // usage reporting: one event now, one per command; see config.yml
+        trace = TraceClient.builder(configService.getUsageReportingEndpoint(), getName())
+                .key(configService.getUsageReportingKey())
+                .enabled(configService.isUsageReportingEnabled())
+                .logger(getLogger())
+                .build();
+        trace.report("startup", null, Collections.singletonMap("version", getDescription().getVersion()));
+
         System.out.println(getConfig().getString("enabledText"));
     }
 
     @Override
     public void onDisable() {
+        trace.close();
+
         System.out.println(getConfig().getString("disablingText"));
         storageService.save();
         System.out.println(getConfig().getString("disabledText"));
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        trace.report("command", null, Collections.singletonMap("name", cmd.getName()));
         return commandService.interpretCommand(sender, label, args);
     }
 

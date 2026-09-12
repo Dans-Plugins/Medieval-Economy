@@ -8,6 +8,11 @@ import java.io.File;
  * @author Daniel McCoy Stephenson
  */
 public class ConfigService {
+    private static final String USAGE_REPORTING_ENABLED_KEY = "usage-reporting.enabled";
+    private static final String USAGE_REPORTING_ENDPOINT_KEY = "usage-reporting.endpoint";
+    private static final String USAGE_REPORTING_KEY_KEY = "usage-reporting.key";
+    private static final String DEFAULT_USAGE_REPORTING_ENDPOINT = "https://trace.danielstephenson.dev";
+
     private final MedievalEconomy medievalEconomy;
 
     public ConfigService(MedievalEconomy plugin) {
@@ -77,8 +82,38 @@ public class ConfigService {
         medievalEconomy.getConfig().addDefault("currencyItemLoreLineTwo", "Best kept in a coinpurse.");
         medievalEconomy.getConfig().addDefault("currencyItemLoreLineThree", "useful commands: /balance /deposit /withdraw");
         medievalEconomy.getConfig().addDefault("compatibilityText", "[ALERT] Old save folder name (pre v3.2) detected. Updating for compatibility.");
+        // The same three values are written in src/main/resources/config.yml, which is what an
+        // installation whose config.yml predates usage reporting falls back to (see the getters
+        // below); UsageReportingConfigTest pins the two together.
+        medievalEconomy.getConfig().addDefault("usage-reporting.enabled", true);
+        medievalEconomy.getConfig().addDefault("usage-reporting.endpoint", "https://trace.danielstephenson.dev");
+        medievalEconomy.getConfig().addDefault("usage-reporting.key", "v9jS7yhG5qIdX8rvSNGNTJvfIHQMe5jPy4Xt5J0UBpA");
         medievalEconomy.getConfig().options().copyDefaults(true);
         medievalEconomy.saveConfig();
+    }
+
+    // The one-argument getters, deliberately. The usage-reporting block is only written to
+    // the server's config.yml when that file is generated from the defaults, so a server
+    // upgraded from a version before usage reporting has no usage-reporting block on disk.
+    // Bukkit registers the jar's config.yml as the defaults for that file, and the
+    // one-argument getters fall through to them -- but the two-argument getters return
+    // their explicit fallback instead, which for the key would be "" and would turn
+    // reporting off on every existing installation. Verified against YamlConfiguration,
+    // not assumed.
+
+    public boolean isUsageReportingEnabled() {
+        return medievalEconomy.getConfig().getBoolean(USAGE_REPORTING_ENABLED_KEY);
+    }
+
+    public String getUsageReportingEndpoint() {
+        String endpoint = medievalEconomy.getConfig().getString(USAGE_REPORTING_ENDPOINT_KEY);
+        return endpoint != null ? endpoint : DEFAULT_USAGE_REPORTING_ENDPOINT;
+    }
+
+    /** Empty when no key is configured or bundled, which the client treats as "off". */
+    public String getUsageReportingKey() {
+        String key = medievalEconomy.getConfig().getString(USAGE_REPORTING_KEY_KEY);
+        return key != null ? key : "";
     }
 
 }
