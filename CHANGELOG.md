@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- Usage reporting is now disclosed on every startup: the plugin logs whether reporting is on — and what is sent, where, and how to turn it off — or why it is off. Two new opt-outs win over `usage-reporting.enabled`: `enabled: false` in `plugins/trace/config.yml`, a server-wide switch written by the first trace-reporting plugin to start, and the environment variables `TRACE_USAGE_REPORTING=off` / `DO_NOT_TRACK=1`. A `config.yml` that has no `usage-reporting` block gains one from the bundled defaults on enable, so the switch is visible on disk. `README.md` gained a "Usage reporting" section. Nothing about what is sent changed.
+
 ### Fixed
 
 - `/balance` no longer answers a player who holds no coinpurse with silence. That was the one outcome of the command producing no message at all, which is indistinguishable from the command having failed to register; the player is now told that no coinpurse could be found, through the new configurable `balanceNoCoinpurse` key. An empty coinpurse still reports a balance of zero, so the two situations remain distinguishable.

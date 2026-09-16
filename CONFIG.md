@@ -56,9 +56,14 @@ author's [trace](https://github.com/Stephenson-Software/trace-client-java) serve
 plugins are actually in use. An event carries the plugin's name, the event name (`startup` or
 `command`), and either the plugin version or the command name — nothing about players, the world, or
 the server. Sending happens off the main thread, never delays a tick, and is dropped silently if the
-server cannot be reached. Set `usage-reporting.enabled` to `false` to turn it off.
+server cannot be reached. Set `usage-reporting.enabled` to `false` to turn it off. Two other
+switches win over that setting: `enabled: false` in `plugins/trace/config.yml` turns reporting off
+for every plugin on the server that reports to trace (the file is written by the first such plugin
+to start), and the environment variables `TRACE_USAGE_REPORTING=off` and `DO_NOT_TRACK=1` turn it
+off for the whole process. The plugin says on every startup whether reporting is on, and why it is
+off. Details: https://github.com/Stephenson-Software/trace#usage-reporting.
 
-A `config.yml` written by a version before usage reporting has no `usage-reporting` block, and the
-plugin never rewrites an existing file. The three keys are read from the copy bundled in the jar
-whenever the file on disk lacks them, so reporting is active on upgraded servers too unless it is
-turned off; adding the block to `config.yml` is only needed to change a value.
+A `config.yml` written by a version before usage reporting has no `usage-reporting` block. The
+plugin copies the block from the jar's bundled defaults into that file on the next enable, so the
+switch is visible on disk; until then the three keys are read from the bundled copy, so reporting is
+active on upgraded servers too unless it is turned off.
