@@ -81,6 +81,33 @@ public class UsageReportingConfigTest {
         assertFalse(onDisk.getBoolean("usage-reporting.enabled", false));
     }
 
+    /**
+     * The mechanics ConfigService.ensureUsageReportingBlockOnDisk() relies on, measured against
+     * YamlConfiguration: with the bundled file registered as defaults, isSet() is false for a
+     * block that is only in the defaults, and copying the three values across makes the block
+     * part of what a save writes -- with the bundled key, not a fresh literal.
+     */
+    @Test
+    public void aConfigWithoutTheBlock_isNotSetUntilTheDefaultsAreCopiedOntoIt() throws Exception {
+        YamlConfiguration onDisk = new YamlConfiguration();
+        onDisk.loadFromString("version: v1.2.0\nenablingText: Medieval Economy is enabling...\n");
+        onDisk.setDefaults(bundledConfig());
+
+        assertFalse("a block present only in the defaults must not count as set", onDisk.isSet("usage-reporting"));
+        assertFalse(onDisk.saveToString().contains("usage-reporting"));
+
+        for (String key : new String[] {"usage-reporting.enabled", "usage-reporting.endpoint", "usage-reporting.key"}) {
+            onDisk.set(key, onDisk.getDefaults().get(key));
+        }
+
+        assertTrue(onDisk.isSet("usage-reporting"));
+        String written = onDisk.saveToString();
+        assertTrue(written.contains("usage-reporting:"));
+        assertTrue(written.contains(bundledConfig().getString("usage-reporting.key")));
+        assertTrue(written.contains("enabled: true"));
+        assertTrue(written.contains("endpoint: https://trace.danielstephenson.dev"));
+    }
+
     @Test
     public void configService_readsEveryUsageReportingKeyWithTheOneArgumentGetter() {
         int reads = 0;
