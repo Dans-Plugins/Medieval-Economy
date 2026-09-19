@@ -1,8 +1,9 @@
 # Every other setting is registered by ConfigService and written to the server's
-# config.yml the first time the plugin runs; this file only carries what an
-# existing installation must be able to fall back to. Bukkit registers it as the
-# defaults for plugins/MedievalEconomy/config.yml, so a key missing from the
-# file on disk is read from here.
+# config.yml the first time the plugin runs, and appended to it on any later
+# enable that finds a key missing; this file only carries what an existing
+# installation must be able to fall back to before that has happened. Bukkit
+# registers it as the defaults for plugins/MedievalEconomy/config.yml, so a key
+# missing from the file on disk is read from here.
 
 # Usage reporting. When the plugin is enabled, and each time one of its
 # commands is used, a small event (plugin name, event name, plugin version)
