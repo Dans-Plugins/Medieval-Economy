@@ -127,7 +127,10 @@ public class ConfigService {
      * itself. The check reads through {@link ConfigurationSection#get(String, Object)},
      * which never falls through to the defaults, so it answers the same whether or not
      * {@code copyDefaults} has been switched on -- unlike {@code isSet} and {@code getKeys},
-     * which report the defaults as present once it has.
+     * which report the defaults as present once it has. Resolving a nested key whose parent
+     * section exists only in the defaults leaves an empty section behind in {@code config};
+     * that is harmless, because a positive answer is always followed by a save with
+     * {@code copyDefaults} on, which fills the section from the defaults.
      */
     static boolean lacksARegisteredKey(Configuration config) {
         Configuration defaults = config.getDefaults();

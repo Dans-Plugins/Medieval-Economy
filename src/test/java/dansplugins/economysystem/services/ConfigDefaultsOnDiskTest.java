@@ -63,9 +63,9 @@ public class ConfigDefaultsOnDiskTest {
 
     /**
      * isSet() and getKeys() start reporting the defaults as present once copyDefaults is on,
-     * which is the state the config is left in after saveConfigDefaults(); the check must not
-     * be fooled by that, or a missing key would go unwritten on exactly the enable that follows
-     * a version change.
+     * which is the state saveConfigDefaults() leaves a config in. onEnable() reloads the config
+     * before the check today, so copyDefaults is off there; the check must still not be fooled
+     * should it ever run on such a config, or a missing key would silently go unwritten.
      */
     @Test
     public void aMissingKey_isStillDetectedOnceCopyDefaultsIsOn() throws Exception {
