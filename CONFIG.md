@@ -1,6 +1,9 @@
 # Medieval Economy Configuration
 
-The configuration file is generated at `plugins/MedievalEconomy/config.yml` on first run.
+The configuration file is generated at `plugins/MedievalEconomy/config.yml` on first run. A key
+added by a later build is appended to that file, with its default, the next time the plugin is
+enabled; the values already in the file are kept, and a file that carries every key is not
+rewritten. When the plugin version changes, a copy of the previous file is kept as `config.yml.old`.
 
 ## Options
 
@@ -64,6 +67,6 @@ off for the whole process. The plugin says on every startup whether reporting is
 off. Details: https://github.com/Stephenson-Software/trace#usage-reporting.
 
 A `config.yml` written by a version before usage reporting has no `usage-reporting` block. The
-plugin copies the block from the jar's bundled defaults into that file on the next enable, so the
-switch is visible on disk; until then the three keys are read from the bundled copy, so reporting is
-active on upgraded servers too unless it is turned off.
+plugin appends the block, like any other missing key, to that file on the next enable, so the
+switch is visible on disk; until then the three keys are read from the jar's bundled copy, so
+reporting is active on upgraded servers too unless it is turned off.
