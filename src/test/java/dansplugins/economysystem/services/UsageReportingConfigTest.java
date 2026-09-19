@@ -82,10 +82,11 @@ public class UsageReportingConfigTest {
     }
 
     /**
-     * The mechanics ConfigService.ensureUsageReportingBlockOnDisk() relies on, measured against
+     * The mechanics ConfigService.ensureDefaultsOnDisk() relies on, measured against
      * YamlConfiguration: with the bundled file registered as defaults, isSet() is false for a
      * block that is only in the defaults, and copying the three values across makes the block
      * part of what a save writes -- with the bundled key, not a fresh literal.
+     * ConfigDefaultsOnDiskTest covers the decision of when that write happens.
      */
     @Test
     public void aConfigWithoutTheBlock_isNotSetUntilTheDefaultsAreCopiedOntoIt() throws Exception {

@@ -60,7 +60,10 @@ public final class MedievalEconomy extends JavaPlugin implements Listener {
                 configService.handleVersionMismatch();
             }
             reloadConfig();
-            configService.ensureUsageReportingBlockOnDisk();
+            // reloadConfig() drops every default registered before it, so the defaults are
+            // registered again here -- a key added since this config.yml was generated would
+            // otherwise read back as null (and be appended to the file only on a version change)
+            configService.ensureDefaultsOnDisk();
         }
 
         this.getServer().getPluginManager().registerEvents(this, this);
