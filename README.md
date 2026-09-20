@@ -1,6 +1,10 @@
 # What is this?
 This Minecraft plugin provides a virtual coinpurse and a physical currency item for the purpose of simulating an economy.
 
+## Download
+- [SpigotMC](https://www.spigotmc.org/resources/medieval-economy.81836/)
+- [GitHub releases](https://github.com/Dans-Plugins/Medieval-Economy/releases)
+
 ## Usage reporting
 
 Usage reporting is on by default: when the plugin is enabled, and each time one of its commands is used, it sends its name, version and the command's name (`startup` and `command` events) to https://trace.danielstephenson.dev so it is known which plugins are actually in use. Nothing about players, worlds, IPs or the server is sent, and nothing typed after a command. The plugin says on every startup whether reporting is on. To turn it off:
