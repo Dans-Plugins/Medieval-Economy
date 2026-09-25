@@ -3,7 +3,8 @@
 The configuration file is generated at `plugins/MedievalEconomy/config.yml` on first run. A key
 added by a later build is appended to that file, with its default, the next time the plugin is
 enabled; the values already in the file are kept, and a file that carries every key is not
-rewritten. When the plugin version changes, a copy of the previous file is kept as `config.yml.old`.
+rewritten. When the plugin version changes, a copy of the previous file is kept as `config.yml.old`
+and `version` is updated to the running plugin; every other value already in the file is kept.
 
 ## Options
 

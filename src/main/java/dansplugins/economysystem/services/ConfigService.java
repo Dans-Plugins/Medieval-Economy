@@ -24,7 +24,7 @@ public class ConfigService {
     public void handleVersionMismatch() {
 
         if (!medievalEconomy.getConfig().getString("version").equalsIgnoreCase(medievalEconomy.getVersion())) {
-            System.out.println("[ALERT] Verson mismatch! Saving old config as config.yml.old and loading in the default values.");
+            System.out.println("[ALERT] Version mismatch! Saving old config as config.yml.old; the values already set are kept and any missing keys are given their defaults.");
             renameConfigToConfigDotOldAndSaveDefaults();
         }
 
@@ -38,6 +38,10 @@ public class ConfigService {
             // rename file
             File newSaveFile = new File("./plugins/MedievalEconomy/config.yml.old");
             saveFile.renameTo(newSaveFile);
+
+            // addDefault never overrides a loaded value, so without this the file would be
+            // written back with the old version string and the mismatch detected on every enable
+            medievalEconomy.getConfig().set("version", medievalEconomy.getVersion());
 
             // save defaults
             saveConfigDefaults();
