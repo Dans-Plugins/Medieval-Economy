@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `depositUsageText` was registered twice, so the default a generated `config.yml` received was `Usage: /deposit (number)` rather than the `Usage: /deposit (whole number)` documented in `CONFIG.md` and matching `withdrawUsageText`. The stray second registration has been removed. Existing `config.yml` files are unaffected; a value already saved there stays as it is.
 - Every permission node the plugin checks is now declared in `plugin.yml`. Undeclared nodes fall back to Bukkit's op-only default, so `/balance`, `/deposit` and `/withdraw` were unusable by ordinary players on servers without a permissions plugin. The declared defaults match the table in `USER_GUIDE.md`, and `medievaleconomy.admin` now genuinely grants every other node. Explicit grants made through a permissions plugin are unaffected.
 - `COMMANDS.md` no longer lists `medievaleconomy.default` against `/econ help`; that subcommand has never been permission-gated.
+- `COMMANDS.md` now documents that a bare `/econ` shows the help menu, that `/econ createcurrency` refuses a full inventory, and what each command does from the server console — where only `/econ reload` runs. `USER_GUIDE.md` now marks the `createcurrency` amount as optional and names the starter kit's book as the book and quill the plugin actually gives.
 
 ## [2.0.0-SNAPSHOT-8-8-2026] – 2026-08-08
 
