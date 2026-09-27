@@ -11,7 +11,7 @@
 
 ## From the console
 
-Only `/econ reload` does anything when run from the server console; it needs no permission there
-and prints the `configReloadedText` message to the log. `/econ createcurrency` is refused with the
-`createCurrencyNoRunFromConsole` message. `/econ`, `/econ help`, `/balance`, `/deposit` and
+`/econ reload` is the only command that runs from the server console; it needs no permission there
+and prints the `configReloadedText` message to the log. `/econ createcurrency` is refused, and the
+`createCurrencyNoRunFromConsole` message is printed to the log. `/econ`, `/econ help`, `/balance`, `/deposit` and
 `/withdraw` are player-only and produce no output from the console.
