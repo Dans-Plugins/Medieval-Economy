@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -58,10 +59,37 @@ public class UtilityService {
     }
 
     public void sendHelpMessage(Player player) {
-        player.sendMessage(ChatColor.AQUA + "/econ help - Show a helpful list of commands.");
-        if (player.hasPermission("medievaleconomy.createcurrency")) {
-            player.sendMessage(ChatColor.AQUA + "/econ createcurrency # - Bring more currency into the world.");
+        for (String line : composeHelpLines(player::hasPermission)) {
+            player.sendMessage(line);
         }
+    }
+
+    /**
+     * Builds the help menu for a sender, listing each command the sender may run. Each line is
+     * gated on the same permissions its command handler accepts, so a command is listed exactly
+     * when running it would not be refused for lack of permission.
+     *
+     * @param hasPermission answers whether the sender holds a permission node
+     */
+    static List<String> composeHelpLines(Predicate<String> hasPermission) {
+        List<String> lines = new ArrayList<>();
+        lines.add(ChatColor.AQUA + "/econ help - Show a helpful list of commands.");
+        if (hasPermission.test("medievaleconomy.balance") || hasPermission.test("medievaleconomy.default")) {
+            lines.add(ChatColor.AQUA + "/balance - Display how many coins are in your coinpurse.");
+        }
+        if (hasPermission.test("medievaleconomy.deposit") || hasPermission.test("medievaleconomy.default")) {
+            lines.add(ChatColor.AQUA + "/deposit <amount> - Move coins from your inventory into your coinpurse.");
+        }
+        if (hasPermission.test("medievaleconomy.withdraw") || hasPermission.test("medievaleconomy.default")) {
+            lines.add(ChatColor.AQUA + "/withdraw <amount> - Move coins from your coinpurse into your inventory.");
+        }
+        if (hasPermission.test("medievaleconomy.createcurrency") || hasPermission.test("medievaleconomy.admin")) {
+            lines.add(ChatColor.AQUA + "/econ createcurrency # - Bring more currency into the world.");
+        }
+        if (hasPermission.test("medievaleconomy.reload") || hasPermission.test("medievaleconomy.admin")) {
+            lines.add(ChatColor.AQUA + "/econ reload - Reload the plugin config.");
+        }
+        return lines;
     }
 
     public boolean hasCoinpurse(UUID uuid) {
