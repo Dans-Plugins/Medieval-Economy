@@ -2,7 +2,7 @@
 
 | Command | Permission | Description |
 |---------|------------|-------------|
-| `/econ` or `/econ help` | *(none)* | Show the help menu. |
+| `/econ` or `/econ help` | *(none)* | Show the help menu, which lists each command you have permission to run. |
 | `/econ createcurrency [amount]` | `medievaleconomy.createcurrency` | Give yourself `amount` coins (default 1). Refused with "Inventory full." when your inventory has no empty slot. |
 | `/econ reload` | `medievaleconomy.reload` | Reload the plugin configuration. |
 | `/balance` | `medievaleconomy.balance` | Display how many coins are in your coinpurse. |
