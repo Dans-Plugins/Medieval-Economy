@@ -44,7 +44,7 @@ and `version` is updated to the running plugin; every other value already in the
 | `withdrawNotEnoughCoins` | `You don't have that many coins in your coinpurse!` | Error when coinpurse lacks sufficient coins. |
 | `withdrawNotEnoughSpace` | `You don't have enough space in your inventory for that many coins!` | Error when inventory is full. |
 | `withdrawNoPermission` | `Sorry! In order to use this command, you need the permission 'medievaleconomy.withdraw'` | Error shown when `/withdraw` is used without permission. |
-| `deathMessage` | `Your coinpurse feels lighter than it was.` | Message shown to a player on death (coins may be lost). |
+| `deathMessage` | `Your coinpurse feels lighter than it was.` | Message shown to a player who dies with coins in their coinpurse, when part of the balance is dropped. Not shown on a death with an empty coinpurse. |
 | `coinpurseSaveErrorText` | `An error occurred saving a Coinpurse Record.` | Console message shown when a single coinpurse fails to save. |
 | `coinpurseLoadErrorText` | `An error occurred loading ` | Console message prefix shown when a single coinpurse fails to load. |
 | `storageSaveError` | `An error occurred while saving coinpurse record filenames.` | Console message shown when the coinpurse filename index fails to save. |
