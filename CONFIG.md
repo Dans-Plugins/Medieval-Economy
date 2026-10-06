@@ -67,7 +67,7 @@ switches win over that setting: `enabled: false` in `plugins/trace/config.yml` t
 for every plugin on the server that reports to trace (the file is written by the first such plugin
 to start), and the environment variables `TRACE_USAGE_REPORTING=off` and `DO_NOT_TRACK=1` turn it
 off for the whole process. The plugin says on every startup whether reporting is on, and why it is
-off. Details: https://github.com/Stephenson-Software/trace#usage-reporting.
+off. Details: https://danielstephenson.dev/usage-reporting.
 
 A `config.yml` written by a version before usage reporting has no `usage-reporting` block. The
 plugin appends the block, like any other missing key, to that file on the next enable, so the
