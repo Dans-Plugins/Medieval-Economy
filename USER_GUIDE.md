@@ -23,7 +23,7 @@ The first time a player joins, they're given 50 gold coins, 10 bread, and a book
 
 ## Death Penalty
 
-When a player with coins in their coinpurse dies, 10% of their coinpurse (or 1 coin if their balance is below 10) is removed and dropped on the ground as physical coins.
+When a player with coins in their coinpurse dies, 10% of their coinpurse, rounded down (or 1 coin if their balance is below 10), is removed and dropped on the ground as physical coins.
 
 ## Permissions
 

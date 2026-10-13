@@ -22,7 +22,7 @@ and `version` is updated to the running plugin; every other value already in the
 | `createCurrencyPositiveText` | `Number must be positive!` | Error when `/econ createcurrency` is given an amount below 1. |
 | `createCurrencyNoPermission` | `You need the following permission to use this command: 'medievaleconomy.createcurrency'` | Error shown when `/econ createcurrency` is used without permission. |
 | `createCurrencyNoRunFromConsole` | `You can't run this command from the console!` | Error shown when `/econ createcurrency` is run from the console. |
-| `currencyItemName` | `Gold Coin` | Display name of the coin item. |
+| `currencyItemName` | `Gold Coin` | Display name of the coin item. `/deposit` only accepts coins whose name and lore match the current settings, so changing this, one of the `currencyItemLoreLine` keys or `titleSeparator` leaves coins already in players' inventories unable to be deposited. |
 | `currencyItemLoreLineOne` | `The currency of the Continent.` | First lore line on the coin item. |
 | `currencyItemLoreLineTwo` | `Best kept in a coinpurse.` | Second lore line on the coin item. |
 | `currencyItemLoreLineThree` | `useful commands: /balance /deposit /withdraw` | Third lore line on the coin item. |
@@ -42,7 +42,7 @@ and `version` is updated to the running plugin; every other value already in the
 | `withdrawTextStart` | `You open your coinpurse and take out ` | Prefix for successful withdraw message. |
 | `withdrawTextEnd` | ` coins.` | Suffix for successful withdraw message. |
 | `withdrawNotEnoughCoins` | `You don't have that many coins in your coinpurse!` | Error when coinpurse lacks sufficient coins. |
-| `withdrawNotEnoughSpace` | `You don't have enough space in your inventory for that many coins!` | Error when inventory is full. |
+| `withdrawNotEnoughSpace` | `You don't have enough space in your inventory for that many coins!` | Shown when `/withdraw` finds no empty inventory slot, and when the requested coins do not all fit, in which case the coins that fit have already been taken out. |
 | `withdrawNoPermission` | `Sorry! In order to use this command, you need the permission 'medievaleconomy.withdraw'` | Error shown when `/withdraw` is used without permission. |
 | `deathMessage` | `Your coinpurse feels lighter than it was.` | Message shown to a player who dies with coins in their coinpurse, when part of the balance is dropped. Not shown on a death with an empty coinpurse. |
 | `coinpurseSaveErrorText` | `An error occurred saving a Coinpurse Record.` | Console message shown when a single coinpurse fails to save. |
