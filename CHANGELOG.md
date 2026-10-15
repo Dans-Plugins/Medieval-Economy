@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- The namespaced forms of the commands — `/medievaleconomy:econ`, `/medievaleconomy:balance`, `/medievaleconomy:deposit` and `/medievaleconomy:withdraw` — now run the command. Before, they did nothing but print the command's usage string, because commands were matched on the text typed, which carries the `medievaleconomy:` prefix, rather than on the command's name. This is the form to type when another plugin registers a command of the same name.
+
 ## [2.1.1] – 2026-10-07
 
 ### Changed
