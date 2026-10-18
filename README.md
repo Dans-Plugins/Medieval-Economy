@@ -1,4 +1,9 @@
 # What is this?
+
+![Creating 50 coins, depositing 30 into the coinpurse and checking /balance](docs/images/coinpurse.png)
+
+*Real in-game output from Medieval Economy 2.1.2 on a local throwaway Paper 1.21.11 test server: the commands were typed by a scripted bot client, and the chat it received is drawn as Minecraft-style chat (typed commands appear in the input bars; grey lines say what happened between commands).*
+
 This Minecraft plugin provides a virtual coinpurse and a physical currency item for the purpose of simulating an economy.
 
 ## Supported Minecraft Versions
