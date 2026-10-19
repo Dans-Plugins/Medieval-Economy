@@ -13,8 +13,16 @@ Thank you for your interest in contributing!
 ## Code Style
 
 - Language: Java
-- Build tool: Maven (`mvn clean package`)
+- Build tool: Maven (`mvn clean package`, which also runs the tests)
 - Follow existing conventions in the codebase.
+
+## Tests
+
+The tests are JUnit 4 and live under `src/test/java`; run them with `mvn test`. `MedievalEconomy`
+extends `JavaPlugin`, which cannot be constructed outside a running server, so a test does not
+build the plugin or a command handler. Logic worth testing is instead moved into a package-private
+`static` method that takes plain values, and the handler delegates to it — see
+`DeathListener.takeDeathPenalty` and `BalanceCommand.composeBalanceMessage` for the pattern.
 
 ## Reporting Issues
 
