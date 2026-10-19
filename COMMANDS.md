@@ -9,6 +9,10 @@
 | `/deposit <amount>` | `medievaleconomy.deposit` | Move coins from your inventory into your coinpurse. Only coins that match the coin item as currently configured are counted (see `currencyItemName` in [CONFIG.md](CONFIG.md)). |
 | `/withdraw <amount>` | `medievaleconomy.withdraw` | Move coins from your coinpurse into your inventory. Refused when your inventory has no empty slot, even if a stack of coins in it has room. If the coins do not all fit, as many as fit are withdrawn, the rest stay in your coinpurse, and the `withdrawNotEnoughSpace` message is shown in place of the usual count. |
 
+`/econ` subcommands are matched without regard to case. A subcommand that is not one of `help`,
+`createcurrency` or `reload` (for example `/econ foo`) produces no output; type `/econ` on its own
+for the help menu.
+
 ## From the console
 
 `/econ reload` is the only command that runs from the server console; it needs no permission there
