@@ -10,7 +10,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -27,12 +29,36 @@ public class UtilityService {
     public void addCurrencyToInventory(Player player, int amount) {
         // if player's inventory has space
         if (!(player.getInventory().firstEmpty() == -1)) {
-            player.getInventory().addItem(getCurrency(amount));
-            player.sendMessage(ChatColor.GREEN + "" + amount + " currency created.");
+            Map<Integer, ItemStack> notStored = player.getInventory().addItem(getCurrency(amount));
+            player.sendMessage(composeCurrencyCreatedMessage(amount, countItems(notStored.values())));
         }
         else { // player's inventory is full
             player.sendMessage(ChatColor.RED + "Inventory full.");
         }
+    }
+
+    /**
+     * Builds what /econ createcurrency answers with. Inventory.addItem stores as many coins as fit
+     * and hands back the rest, which are discarded, so the coins created are the coins requested
+     * less those that did not fit — reporting the requested amount would overstate it.
+     *
+     * @param requested the number of coins the command was asked to create
+     * @param notStored the number of those coins that did not fit in the inventory
+     */
+    static String composeCurrencyCreatedMessage(int requested, int notStored) {
+        int created = requested - notStored;
+        if (notStored == 0) {
+            return ChatColor.GREEN + "" + created + " currency created.";
+        }
+        return ChatColor.YELLOW + "" + created + " currency created. " + notStored + " did not fit in your inventory and were not created.";
+    }
+
+    static int countItems(Collection<ItemStack> stacks) {
+        int count = 0;
+        for (ItemStack stack : stacks) {
+            count += stack.getAmount();
+        }
+        return count;
     }
 
     public void removeCurrencyFromInventory(Player player, int amount) {

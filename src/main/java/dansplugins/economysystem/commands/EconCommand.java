@@ -24,8 +24,7 @@ public class EconCommand {
                     medievalEconomy.getUtilityService().sendHelpMessage((Player) sender);
                 }
             }
-
-            if (args[0].equalsIgnoreCase("createcurrency")) {
+            else if (args[0].equalsIgnoreCase("createcurrency")) {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (player.hasPermission("medievaleconomy.createcurrency") || player.hasPermission("medievaleconomy.admin")) {
@@ -58,8 +57,7 @@ public class EconCommand {
                     System.out.println(medievalEconomy.getConfig().getString("createCurrencyNoRunFromConsole"));
                 }
             }
-
-            if (args[0].equalsIgnoreCase("reload")) {
+            else if (args[0].equalsIgnoreCase("reload")) {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (player.hasPermission("medievaleconomy.reload") || player.hasPermission("medievaleconomy.admin")) {
@@ -76,6 +74,18 @@ public class EconCommand {
                 }
 
             }
+            else {
+                // an unrecognized subcommand used to produce no output, which looks the same as the
+                // command failing to register
+                if (sender instanceof Player) {
+                    Player player = (Player) sender;
+                    player.sendMessage(ChatColor.RED + composeUnknownSubcommandMessage(args[0]));
+                    medievalEconomy.getUtilityService().sendHelpMessage(player);
+                }
+                else {
+                    System.out.println(composeUnknownSubcommandMessage(args[0]));
+                }
+            }
 
         }
         else {
@@ -83,6 +93,10 @@ public class EconCommand {
                 medievalEconomy.getUtilityService().sendHelpMessage((Player) sender);
             }
         }
+    }
+
+    static String composeUnknownSubcommandMessage(String subcommand) {
+        return "Unknown /econ subcommand: '" + subcommand + "'.";
     }
 
 }
