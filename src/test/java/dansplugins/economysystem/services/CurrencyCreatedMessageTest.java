@@ -39,8 +39,8 @@ public class CurrencyCreatedMessageTest {
     }
 
     /**
-     * addItem returns one leftover stack per argument it was given, but an oversized stack is not
-     * guaranteed to come back as a single stack, so every leftover stack is counted.
+     * addItem returns a map of leftover stacks rather than a single count, so the count is taken
+     * over every stack in it instead of assuming there is exactly one.
      */
     @Test
     public void countItems_sumsEveryLeftoverStack() {
