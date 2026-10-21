@@ -108,7 +108,7 @@ public class Coinpurse {
      * same state as a record that is missing, so the loader skips it and goes on to the next one.
      * Before, the parse exception escaped onEnable, which left every later record unloaded.
      *
-     * @return false if the record could not be parsed
+     * @return false if the record could not be parsed or names no player
      */
     boolean readRecord(Scanner reader) {
         try {
@@ -119,7 +119,8 @@ public class Coinpurse {
             if (reader.hasNextLine()) {
                 numCoins = Integer.parseInt(reader.nextLine());
             }
-            return true;
+            // an empty record names no player, so it is skipped all the same
+            return uuid != null;
         } catch (IllegalArgumentException e) {
             // NumberFormatException, from the balance, is an IllegalArgumentException too
             uuid = null;

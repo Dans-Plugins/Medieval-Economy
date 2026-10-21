@@ -60,7 +60,7 @@ public class CoinpurseRecordTest {
 
     @Test
     public void readRecord_withEmptyRecord_leavesPurseUnidentified() {
-        Coinpurse purse = read("", true);
+        Coinpurse purse = read("", false);
 
         assertNull(purse.getPlayerUUID());
         assertTrue(purse.containsAtLeast(0));
