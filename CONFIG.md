@@ -46,7 +46,7 @@ and `version` is updated to the running plugin; every other value already in the
 | `withdrawNoPermission` | `Sorry! In order to use this command, you need the permission 'medievaleconomy.withdraw'` | Error shown when `/withdraw` is used without permission. |
 | `deathMessage` | `Your coinpurse feels lighter than it was.` | Message shown to a player who dies with coins in their coinpurse, when part of the balance is dropped. Not shown on a death with an empty coinpurse. |
 | `coinpurseSaveErrorText` | `An error occurred saving a Coinpurse Record.` | Console message shown when a single coinpurse fails to save. |
-| `coinpurseLoadErrorText` | `An error occurred loading ` | Console message prefix shown when a single coinpurse fails to load. |
+| `coinpurseLoadErrorText` | `An error occurred loading ` | Console message prefix, followed by the record's filename, shown when a single coinpurse record is missing or cannot be read. The record is skipped and the rest still load. |
 | `storageSaveError` | `An error occurred while saving coinpurse record filenames.` | Console message shown when the coinpurse filename index fails to save. |
 | `storageLoadError` | `Error loading the coinpurse records!` | Console message shown when the coinpurse filename index fails to load. |
 | `usage-reporting.enabled` | `true` | Whether the plugin reports usage events (see below). Set to `false` to turn it off. |
