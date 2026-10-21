@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - The namespaced forms of the commands — `/medievaleconomy:econ`, `/medievaleconomy:balance`, `/medievaleconomy:deposit` and `/medievaleconomy:withdraw` — now run the command. Before, they did nothing but print the command's usage string, because commands were matched on the text typed, which carries the `medievaleconomy:` prefix, rather than on the command's name. This is the form to type when another plugin registers a command of the same name.
 - An `/econ` subcommand that is not recognized, such as a typo like `/econ relaod`, is now answered with an "Unknown /econ subcommand" line followed by the help menu (or the line alone, in the console log). Before, it produced no output at all.
 - `/econ createcurrency` now reports how many coins were actually created when they do not all fit in the inventory, and how many did not fit. Before, it reported the full requested amount even though the coins that did not fit were discarded.
+- A coinpurse record in `Coinpurse-Records/` that cannot be read, because its first line is not a UUID or its second line is not a whole number, is now skipped with the `coinpurseLoadErrorText` message, and the remaining records still load. Before, it stopped the plugin enabling part-way. Every record listed after it was left unloaded, so those players were given the starter kit and an empty coinpurse when they next joined, and that empty coinpurse was saved over their record on shutdown.
 
 ## [2.1.1] – 2026-10-07
 

@@ -88,19 +88,44 @@ public class Coinpurse {
             File loadFile = new File("./plugins/MedievalEconomy/Coinpurse-Records/" + filename);
             Scanner loadReader = new Scanner(loadFile);
 
-            // actual loading
-            if (loadReader.hasNextLine()) {
-                uuid = UUID.fromString(loadReader.nextLine());
-            }
-
-            if (loadReader.hasNextLine()) {
-                numCoins = Integer.parseInt(loadReader.nextLine());
-            }
+            boolean read = readRecord(loadReader);
 
             loadReader.close();
-            System.out.println(filename + " successfully loaded.");
+            if (read) {
+                System.out.println(filename + " successfully loaded.");
+            }
+            else {
+                System.out.println(medievalEconomy.getConfig().getString("coinpurseLoadErrorText") + filename);
+            }
         } catch (FileNotFoundException e) {
             System.out.println(medievalEconomy.getConfig().getString("coinpurseLoadErrorText") + filename);
+        }
+    }
+
+    /**
+     * Reads a record as save() writes it: the player's UUID on the first line, the balance on the
+     * second. A record that cannot be parsed leaves this coinpurse with no UUID and no coins, the
+     * same state as a record that is missing, so the loader skips it and goes on to the next one.
+     * Before, the parse exception escaped onEnable, which left every later record unloaded.
+     *
+     * @return false if the record could not be parsed or names no player
+     */
+    boolean readRecord(Scanner reader) {
+        try {
+            if (reader.hasNextLine()) {
+                uuid = UUID.fromString(reader.nextLine());
+            }
+
+            if (reader.hasNextLine()) {
+                numCoins = Integer.parseInt(reader.nextLine());
+            }
+            // an empty record names no player, so it is skipped all the same
+            return uuid != null;
+        } catch (IllegalArgumentException e) {
+            // NumberFormatException, from the balance, is an IllegalArgumentException too
+            uuid = null;
+            numCoins = 0;
+            return false;
         }
     }
 
