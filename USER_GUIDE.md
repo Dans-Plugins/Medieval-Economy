@@ -19,7 +19,9 @@ Medieval Economy is a Spigot plugin that adds a physical coin-based currency sys
 
 ## Starter Kit
 
-The first time a player joins, they're given 50 gold coins, 10 bread, and a book and quill, and a coinpurse is created for them.
+When a player joins without a coinpurse, they're given 50 gold coins, 10 bread, and a book and quill, and an empty coinpurse is created for them. Items that do not fit in their inventory are not given.
+
+A player normally has no coinpurse only on their first join. A player whose coinpurse record could not be read at startup (the `coinpurseLoadErrorText` message in the console, see [CONFIG.md](CONFIG.md)) has none either, so on their next join they get the starter kit again and an empty coinpurse, and that empty coinpurse is saved over their unreadable record when the server stops. Repair or restore the record before the player rejoins to keep their balance.
 
 ## Death Penalty
 
