@@ -56,7 +56,7 @@ public final class MedievalEconomy extends JavaPlugin implements Listener {
         }
         else {
             // check version
-            if (!getConfig().getString("version").equalsIgnoreCase(pluginVersion)) {
+            if (ConfigService.isVersionMismatch(getConfig().getString("version"), pluginVersion)) {
                 configService.handleVersionMismatch();
             }
             reloadConfig();

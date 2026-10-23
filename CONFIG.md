@@ -10,7 +10,7 @@ and `version` is updated to the running plugin; every other value already in the
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `version` | *(plugin version)* | Config file version. Do not edit manually. |
+| `version` | *(plugin version)* | Config file version. Do not edit manually. A file with no `version` line is treated as a version change. |
 | `enablingText` | `Medieval Economy is enabling...` | Console message shown while the plugin is enabling. |
 | `enabledText` | `Medieval Economy is enabled!` | Console message shown once the plugin has enabled. |
 | `disablingText` | `Medieval Economy is disabling...` | Console message shown while the plugin is disabling. |

@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - An `/econ` subcommand that is not recognized, such as a typo like `/econ relaod`, is now answered with an "Unknown /econ subcommand" line followed by the help menu (or the line alone, in the console log). Before, it produced no output at all.
 - `/econ createcurrency` now reports how many coins were actually created when they do not all fit in the inventory, and how many did not fit. Before, it reported the full requested amount even though the coins that did not fit were discarded.
 - A coinpurse record in `Coinpurse-Records/` that cannot be read, because its first line is not a UUID or its second line is not a whole number, is now skipped with the `coinpurseLoadErrorText` message, and the remaining records still load. Before, it stopped the plugin enabling part-way. Every record listed after it was left unloaded, so those players were given the starter kit and an empty coinpurse when they next joined, and that empty coinpurse was saved over their record on shutdown.
+- A `config.yml` with no `version` line is now treated as a version change: the file is kept as `config.yml.old`, the running version is written, and every other value is kept. Before, the plugin failed to enable with a `NullPointerException`, and no coinpurse was loaded.
 
 ## [2.1.1] – 2026-10-07
 

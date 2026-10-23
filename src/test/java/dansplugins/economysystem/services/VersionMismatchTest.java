@@ -5,11 +5,16 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -26,6 +31,8 @@ public class VersionMismatchTest {
 
     private static final File CONFIG_SERVICE =
             new File("src/main/java/dansplugins/economysystem/services/ConfigService.java");
+    private static final File MEDIEVAL_ECONOMY =
+            new File("src/main/java/dansplugins/economysystem/MedievalEconomy.java");
 
     @Test
     public void aDefaultAlone_leavesTheOldVersionInTheWrittenFile() throws Exception {
@@ -60,6 +67,53 @@ public class VersionMismatchTest {
         assertTrue("renameConfigToConfigDotOldAndSaveDefaults() no longer sets the version explicitly, so the"
                 + " old version string is written back and the mismatch recurs on every enable", set >= 0);
         assertTrue("the version must be set before saveConfigDefaults() writes the file", save > set);
+    }
+
+    /**
+     * Measured against YamlConfiguration rather than assumed: the bundled config.yml, which is
+     * all a file on disk falls through to when onEnable compares versions, carries no version, so
+     * a file without the line reads it back as null.
+     */
+    @Test
+    public void aConfigWithoutAVersionLine_readsTheVersionBackAsNull() throws Exception {
+        YamlConfiguration onDisk = load("enablingText: custom\n");
+        onDisk.setDefaults(bundledConfig());
+
+        assertNull(onDisk.getString("version"));
+    }
+
+    @Test
+    public void isVersionMismatch_treatsAMissingVersionAsAMismatch() {
+        assertTrue(ConfigService.isVersionMismatch(null, "v2.1.3"));
+    }
+
+    @Test
+    public void isVersionMismatch_comparesWithoutRegardToCase() {
+        assertFalse(ConfigService.isVersionMismatch("v2.1.3", "v2.1.3"));
+        assertFalse(ConfigService.isVersionMismatch("V2.1.3", "v2.1.3"));
+        assertTrue(ConfigService.isVersionMismatch("v2.1.2", "v2.1.3"));
+    }
+
+    @Test
+    public void neitherVersionCheck_dereferencesTheConfiguredVersion() {
+        String dereference = "getString(\"version\").";
+        for (File source : new File[] {CONFIG_SERVICE, MEDIEVAL_ECONOMY}) {
+            for (String line : read(source)) {
+                assertFalse(source + " calls a method on the configured version, which is null for a config.yml"
+                        + " without a version line: " + line.trim(), line.contains(dereference));
+            }
+        }
+    }
+
+    private YamlConfiguration bundledConfig() {
+        YamlConfiguration bundled = new YamlConfiguration();
+        try (InputStream stream = getClass().getResourceAsStream("/config.yml")) {
+            assertNotNull("config.yml was not found on the test classpath", stream);
+            bundled.load(new InputStreamReader(stream, "UTF-8"));
+        } catch (Exception e) {
+            throw new AssertionError("could not read the bundled config.yml", e);
+        }
+        return bundled;
     }
 
     private String methodBody(String name) {
