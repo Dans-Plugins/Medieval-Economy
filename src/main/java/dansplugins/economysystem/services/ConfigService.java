@@ -23,11 +23,22 @@ public class ConfigService {
 
     public void handleVersionMismatch() {
 
-        if (!medievalEconomy.getConfig().getString("version").equalsIgnoreCase(medievalEconomy.getVersion())) {
+        if (isVersionMismatch(medievalEconomy.getConfig().getString("version"), medievalEconomy.getVersion())) {
             System.out.println("[ALERT] Version mismatch! Saving old config as config.yml.old; the values already set are kept and any missing keys are given their defaults.");
             renameConfigToConfigDotOldAndSaveDefaults();
         }
 
+    }
+
+    /**
+     * Whether the version a config.yml carries differs from the running plugin's. A file with no
+     * version line counts as a mismatch: the bundled config.yml does not carry the key, so it reads
+     * back as null on enable, and comparing from it used to throw out of onEnable.
+     *
+     * @param configured the config.yml's version, or null if the file has none
+     */
+    public static boolean isVersionMismatch(String configured, String running) {
+        return configured == null || !configured.equalsIgnoreCase(running);
     }
 
     public void renameConfigToConfigDotOldAndSaveDefaults() {
