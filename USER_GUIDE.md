@@ -23,6 +23,8 @@ When a player joins without a coinpurse, they're given 50 gold coins, 10 bread, 
 
 A player normally has no coinpurse only on their first join. A player whose coinpurse record could not be read at startup (the `coinpurseLoadErrorText` message in the console, see [CONFIG.md](CONFIG.md)) has none either, so on their next join they get the starter kit again and an empty coinpurse, and that empty coinpurse is saved over their unreadable record when the server stops. Repair or restore the record before the player rejoins to keep their balance.
 
+If the player does not rejoin, the record is lost from the index instead. `coinpurse-record-filenames.txt` is rewritten each time the server stops, from the coinpurses the server holds, which do not include the unreadable record, so its filename is dropped and the file in `Coinpurse-Records/` is not read on later starts. If you repair the record after the server has stopped once, add its filename (`<uuid>.txt`) back to `coinpurse-record-filenames.txt` as well, with the server stopped, so that the next start loads it.
+
 ## Death Penalty
 
 When a player with coins in their coinpurse dies, 10% of their coinpurse, rounded down (or 1 coin if their balance is below 10), is removed and dropped on the ground as physical coins.
