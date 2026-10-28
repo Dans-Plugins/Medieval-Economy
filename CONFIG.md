@@ -63,8 +63,8 @@ plugins are actually in use. An event carries the plugin's name, the event name 
 deleting the line gets a new one) — nothing about players or the world. Repeats are coalesced: the
 first use of a command is sent at once, and further uses of the same command in the next 60 seconds
 are counted and sent as one event, carrying the count as its value and in a `coalesced` tag; counts
-still open are sent when the plugin is disabled, and `startup` is never held back. Sending happens off the main
-thread, never delays a tick, and is dropped silently if the
+still open are sent when the plugin is disabled, and `startup` is never held back. Sending happens
+off the main thread, never delays a tick, and is dropped silently if the
 server cannot be reached. Set `usage-reporting.enabled` to `false` to turn it off. Two other
 switches win over that setting: `enabled: false` in `plugins/trace/config.yml` turns reporting off
 for every plugin on the server that reports to trace (the file is written by the first such plugin
