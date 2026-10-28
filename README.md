@@ -27,7 +27,7 @@ Every plugin above is listed on [dansplugins.com](https://dansplugins.com). Medi
 
 ## Usage reporting
 
-Usage reporting is on by default: when the plugin is enabled, and each time one of its commands is used, it sends its name, version and the command's name (`startup` and `command` events) to https://trace.danielstephenson.dev so it is known which plugins are actually in use. Nothing about players, worlds or IPs is sent, and nothing typed after a command. The plugin says on every startup whether reporting is on. Each event also carries a random server ID (the `server-id` line in `plugins/trace/config.yml`) so
+Usage reporting is on by default: when the plugin is enabled, and each time one of its commands is used, it sends its name, version and the command's name (`startup` and `command` events) to https://trace.danielstephenson.dev so it is known which plugins are actually in use. Repeated uses of a command within 60 seconds are counted and sent as one event. Nothing about players, worlds or IPs is sent, and nothing typed after a command. The plugin says on every startup whether reporting is on. Each event also carries a random server ID (the `server-id` line in `plugins/trace/config.yml`) so
 servers can be counted rather than events. It identifies no person, account or IP address; delete
 the line to get a new one.
 

@@ -6,13 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- The vendored trace client is now 0.7.0, which coalesces repeated usage events. The first `command` event for a given command is sent at once. Further uses of the same command in the next 60 seconds are counted and sent as one event, which carries the count as its value and in a `coalesced` tag. Events still open are sent when the plugin is disabled, and `startup` is never held back. A command dispatched in a loop by another plugin can no longer flood the trace server. Nothing new about players or the server is sent. Details: https://github.com/Stephenson-Software/trace-client-java/releases/tag/0.7.0.
+
+## [2.2.0] – 2026-10-25
+
 ### Fixed
 
-- The namespaced forms of the commands — `/medievaleconomy:econ`, `/medievaleconomy:balance`, `/medievaleconomy:deposit` and `/medievaleconomy:withdraw` — now run the command. Before, they did nothing but print the command's usage string, because commands were matched on the text typed, which carries the `medievaleconomy:` prefix, rather than on the command's name. This is the form to type when another plugin registers a command of the same name.
 - An `/econ` subcommand that is not recognized, such as a typo like `/econ relaod`, is now answered with an "Unknown /econ subcommand" line followed by the help menu (or the line alone, in the console log). Before, it produced no output at all.
 - `/econ createcurrency` now reports how many coins were actually created when they do not all fit in the inventory, and how many did not fit. Before, it reported the full requested amount even though the coins that did not fit were discarded.
 - A coinpurse record in `Coinpurse-Records/` that cannot be read, because its first line is not a UUID or its second line is not a whole number, is now skipped with the `coinpurseLoadErrorText` message, and the remaining records still load. Before, it stopped the plugin enabling part-way. Every record listed after it was left unloaded, so those players were given the starter kit and an empty coinpurse when they next joined, and that empty coinpurse was saved over their record on shutdown.
 - A `config.yml` with no `version` line is now treated as a version change: the file is kept as `config.yml.old`, the running version is written, and every other value is kept. Before, the plugin failed to enable with a `NullPointerException`, and no coinpurse was loaded.
+
+## [2.1.2] – 2026-10-18
+
+### Fixed
+
+- The namespaced forms of the commands — `/medievaleconomy:econ`, `/medievaleconomy:balance`, `/medievaleconomy:deposit` and `/medievaleconomy:withdraw` — now run the command. Before, they did nothing but print the command's usage string, because commands were matched on the text typed, which carries the `medievaleconomy:` prefix, rather than on the command's name. This is the form to type when another plugin registers a command of the same name.
 
 ## [2.1.1] – 2026-10-07
 
