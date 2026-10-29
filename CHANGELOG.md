@@ -6,9 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.3.0] – 2026-10-29
+
 ### Changed
 
-- The vendored trace client is now 0.7.0, which coalesces repeated usage events. The first `command` event for a given command is sent at once. Further uses of the same command in the next 60 seconds are counted and sent as one event, which carries the count as its value and in a `coalesced` tag. Events still open are sent when the plugin is disabled, and `startup` is never held back. A command dispatched in a loop by another plugin can no longer flood the trace server. Nothing new about players or the server is sent. Details: https://github.com/Stephenson-Software/trace-client-java/releases/tag/0.7.0.
+- The vendored trace client is now 0.7.0, which coalesces repeated usage events. The first `command` event for a given command is sent at once. Further uses of the same command in the next 60 seconds are counted and sent as one event, which carries the count as its value and in a `coalesced` tag. Events still open are sent when the plugin is disabled, and `startup` is never held back. At most 256 distinct events are counted at once; a new event that arrives while that many are open is dropped without a log line, so memory use stays bounded. A command dispatched in a loop by another plugin can no longer flood the trace server. Nothing new about players or the server is sent. Details: https://github.com/Stephenson-Software/trace-client-java/releases/tag/0.7.0.
 
 ## [2.2.0] – 2026-10-25
 

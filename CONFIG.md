@@ -15,7 +15,7 @@ and `version` is updated to the running plugin; every other value already in the
 | `enabledText` | `Medieval Economy is enabled!` | Console message shown once the plugin has enabled. |
 | `disablingText` | `Medieval Economy is disabling...` | Console message shown while the plugin is disabling. |
 | `disabledText` | `Medieval Economy is disabled!` | Console message shown once the plugin has disabled. |
-| `compatibilityText` | `[ALERT] Old save folder name (pre v3.2) detected. Updating for compatibility.` | Console message shown when migrating saves from the pre-v3.2 folder name. |
+| `compatibilityText` | `[ALERT] Old save folder name (pre v3.2) detected. Updating for compatibility.` | Console message printed at startup when `plugins/Medieval-Economy/`, the save folder used before v0.7, exists. The saves in it are migrated to `plugins/MedievalEconomy/` only if that folder does not exist yet; otherwise the message is printed and nothing is moved. The "pre v3.2" in the default text is not the version the folder was renamed in. |
 | `configReloadedText` | `Config reloaded!` | Message shown after `/econ reload` succeeds. |
 | `reloadNoPermission` | `You need the following permission to use this command: 'medievaleconomy.reload'` | Error shown when `/econ reload` is used without permission. |
 | `createCurrencyUsageText` | `Usage: /econ createcurrency (whole number)` | Usage hint shown when `/econ createcurrency` is given something other than a whole number. |
