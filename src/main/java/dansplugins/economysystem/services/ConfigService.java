@@ -23,7 +23,9 @@ public class ConfigService {
 
     public void handleVersionMismatch() {
 
-        if (isVersionMismatch(medievalEconomy.getConfig().getString("version"), medievalEconomy.getVersion())) {
+        // two-argument getter: onEnable() has already registered the running version as the
+        // default, which the one-argument getter would return for a file with no version line
+        if (isVersionMismatch(medievalEconomy.getConfig().getString("version", null), medievalEconomy.getVersion())) {
             System.out.println("[ALERT] Version mismatch! Saving old config as config.yml.old; the values already set are kept and any missing keys are given their defaults.");
             renameConfigToConfigDotOldAndSaveDefaults();
         }

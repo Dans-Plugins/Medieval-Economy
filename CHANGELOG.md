@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Usage reporting now counts a `command` event only when a player runs the command; console, command-block and plugin-dispatched commands are no longer reported.
 
+### Fixed
+
+- On a fresh install, the console line printed while the plugin enables now reads `Medieval Economy is enabling...`, and the `compatibilityText` line printed when a pre-v0.7 save folder is migrated now shows its message. Before, both were printed as `null`, because they were read before the message defaults were registered.
+
 ## [2.3.0] – 2026-10-29
 
 ### Changed
