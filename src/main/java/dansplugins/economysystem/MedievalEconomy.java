@@ -46,6 +46,11 @@ public final class MedievalEconomy extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        // the bundled config.yml carries no message keys, so without the defaults registered
+        // first, enablingText and compatibilityText read back as null when no config.yml is on
+        // disk yet (a fresh install, or a migration from the pre-v0.7 save folder)
+        configService.registerDefaults();
+
         System.out.println(getConfig().getString("enablingText"));
 
         utilityService.ensureSmoothTransitionBetweenVersions();
@@ -55,8 +60,9 @@ public final class MedievalEconomy extends JavaPlugin implements Listener {
             configService.saveConfigDefaults();
         }
         else {
-            // check version
-            if (ConfigService.isVersionMismatch(getConfig().getString("version"), pluginVersion)) {
+            // check version; the two-argument getter does not fall through to the default
+            // registered above, so a file with no version line still reads back as null
+            if (ConfigService.isVersionMismatch(getConfig().getString("version", null), pluginVersion)) {
                 configService.handleVersionMismatch();
             }
             reloadConfig();
