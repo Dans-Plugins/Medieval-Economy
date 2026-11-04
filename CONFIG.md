@@ -48,7 +48,7 @@ and `version` is updated to the running plugin; every other value already in the
 | `coinpurseSaveErrorText` | `An error occurred saving a Coinpurse Record.` | Console message shown when a single coinpurse fails to save. |
 | `coinpurseLoadErrorText` | `An error occurred loading ` | Console message prefix, followed by the record's filename, shown when a single coinpurse record is missing or cannot be read. The record is skipped and the rest still load. |
 | `storageSaveError` | `An error occurred while saving coinpurse record filenames.` | Console message shown when the coinpurse filename index fails to save. |
-| `storageLoadError` | `Error loading the coinpurse records!` | Console message shown when the coinpurse filename index fails to load. |
+| `storageLoadError` | `Error loading the coinpurse records!` | Console message shown when the coinpurse filename index fails to load. It also appears on the first start of a fresh install, when no index has been written yet, and is harmless there. |
 | `usage-reporting.enabled` | `true` | Whether the plugin reports usage events (see below). Set to `false` to turn it off. |
 | `usage-reporting.endpoint` | `https://trace.danielstephenson.dev` | The trace server events are sent to. |
 | `usage-reporting.key` | `v9jS7yhG5qIdX8rvSNGNTJvfIHQMe5jPy4Xt5J0UBpA` | Identifies this plugin to the trace server so reports are attributed to it. Not a secret: it ships in the default config and can only report as MedievalEconomy. Empty means reporting is off regardless of `enabled`. |
@@ -70,7 +70,8 @@ switches win over that setting: `enabled: false` in `plugins/trace/config.yml` t
 for every plugin on the server that reports to trace (the file is written by the first such plugin
 to start), and the environment variables `TRACE_USAGE_REPORTING=off` and `DO_NOT_TRACK=1` turn it
 off for the whole process. The plugin says on every startup whether reporting is on, and why it is
-off. Details: https://danielstephenson.dev/usage-reporting.
+off. These settings are read when the plugin is enabled, so `/econ reload` does not apply a change
+to them; restart the server instead. Details: https://danielstephenson.dev/usage-reporting.
 
 A `config.yml` written by a version before usage reporting has no `usage-reporting` block. The
 plugin appends the block, like any other missing key, to that file on the next enable, so the

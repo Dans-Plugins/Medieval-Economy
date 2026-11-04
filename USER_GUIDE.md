@@ -41,6 +41,8 @@ When a player with coins in their coinpurse dies, 10% of their coinpurse, rounde
 | `medievaleconomy.reload` | `op` | Reload the plugin config. |
 | `medievaleconomy.admin` | `op` | Grants all permissions. |
 
+`/balance`, `/deposit` and `/withdraw` run for a player who holds either the command's own permission or `medievaleconomy.default`, and every player holds `medievaleconomy.default` unless it is set to false. Setting only `medievaleconomy.balance`, `medievaleconomy.deposit` or `medievaleconomy.withdraw` to false therefore does not take the command away: `medievaleconomy.default` has to be false as well. In the same way, `/econ createcurrency` and `/econ reload` also accept `medievaleconomy.admin`.
+
 ## Support
 
 Open a [GitHub issue](https://github.com/Dans-Plugins/Medieval-Economy/issues) to report bugs or request features.
