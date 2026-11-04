@@ -4,7 +4,7 @@
 |---------|------------|-------------|
 | `/econ` or `/econ help` | *(none)* | Show the help menu, which lists each command you have permission to run. |
 | `/econ createcurrency [amount]` | `medievaleconomy.createcurrency` | Give yourself `amount` coins (default 1). Refused with "Inventory full." when your inventory has no empty slot. If the coins do not all fit, as many as fit are created, the rest are not, and the message says how many were created and how many did not fit. |
-| `/econ reload` | `medievaleconomy.reload` | Reload the plugin configuration. |
+| `/econ reload` | `medievaleconomy.reload` | Reload the plugin configuration. Messages and coin settings apply at once. The `usage-reporting` settings are read only when the plugin is enabled, so a change to them needs a restart. |
 | `/balance` | `medievaleconomy.balance` | Display how many coins are in your coinpurse. |
 | `/deposit <amount>` | `medievaleconomy.deposit` | Move coins from your inventory into your coinpurse. Only coins that match the coin item as currently configured are counted (see `currencyItemName` in [CONFIG.md](CONFIG.md)). |
 | `/withdraw <amount>` | `medievaleconomy.withdraw` | Move coins from your coinpurse into your inventory. Refused when your inventory has no empty slot, even if a stack of coins in it has room. If the coins do not all fit, as many as fit are withdrawn, the rest stay in your coinpurse, and the `withdrawNotEnoughSpace` message is shown in place of the usual count. |
@@ -12,6 +12,11 @@
 `/econ` subcommands are matched without regard to case. A subcommand that is not one of `help`,
 `createcurrency` or `reload` (for example `/econ foo`) is answered with an "Unknown /econ
 subcommand" line followed by the help menu.
+
+The table names each command's own permission. `/balance`, `/deposit` and `/withdraw` also accept
+`medievaleconomy.default`, and `/econ createcurrency` and `/econ reload` also accept
+`medievaleconomy.admin`. See [Permissions](USER_GUIDE.md#permissions) for what that means when
+taking a command away from a player.
 
 ## From the console
 
