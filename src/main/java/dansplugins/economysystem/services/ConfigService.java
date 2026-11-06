@@ -3,8 +3,11 @@ package dansplugins.economysystem.services;
 import dansplugins.economysystem.MedievalEconomy;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -129,14 +132,48 @@ public class ConfigService {
      * otherwise never learn a key added since and would read it back as null. A file that
      * already carries every key is left untouched, so a hand-edited config is not rewritten
      * on every startup; when a key is missing the write keeps every value already there and
-     * appends the defaults, including the bundled usage-reporting block. {@code /econ reload}
-     * runs this as well, because reloading drops the defaults registered on enable.
+     * appends the defaults, including the bundled usage-reporting block.
      */
     public void ensureDefaultsOnDisk() {
         registerDefaults();
         if (lacksARegisteredKey(medievalEconomy.getConfig())) {
             medievalEconomy.getConfig().options().copyDefaults(true);
             medievalEconomy.saveConfig();
+        }
+    }
+
+    /**
+     * Reloads config.yml for {@code /econ reload}. reloadConfig() drops every default registered
+     * before it, so they are registered again, or a key removed from the file would read back
+     * as null until the next restart. Bukkit answers a file it cannot parse with an empty config
+     * and a logged error, and that empty config looks like a file lacking every key, so such a
+     * file is not written: that would replace the operator's config.yml, and every setting in
+     * it, with the defaults. onEnable() has no such risk, because the missing version line of an
+     * empty config sends the file to config.yml.old first.
+     */
+    public void reload() {
+        medievalEconomy.reloadConfig();
+        if (canBeParsed(new File(medievalEconomy.getDataFolder(), "config.yml"))) {
+            ensureDefaultsOnDisk();
+        }
+        else {
+            registerDefaults();
+        }
+    }
+
+    /**
+     * Whether the file can be read as YAML. A file that does not exist counts: it holds nothing
+     * to lose, so generating it again is safe.
+     */
+    static boolean canBeParsed(File configFile) {
+        if (!configFile.exists()) {
+            return true;
+        }
+        try {
+            new YamlConfiguration().load(configFile);
+            return true;
+        } catch (IOException | InvalidConfigurationException e) {
+            return false;
         }
     }
 
