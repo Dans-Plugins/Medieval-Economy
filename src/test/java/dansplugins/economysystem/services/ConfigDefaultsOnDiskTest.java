@@ -1,7 +1,9 @@
 package dansplugins.economysystem.services;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,12 +26,19 @@ import static org.junit.Assert.assertTrue;
  * against YamlConfiguration through the static check the method delegates to, the way
  * UsageReportingConfigTest measures the getter fall-through; the wiring in
  * MedievalEconomy.onEnable() is checked at the source level, as ConfigDefaultsTest checks
- * the registrations.
+ * the registrations. The same check covers EconCommand's /econ reload.
  */
 public class ConfigDefaultsOnDiskTest {
 
     private static final File MEDIEVAL_ECONOMY =
             new File("src/main/java/dansplugins/economysystem/MedievalEconomy.java");
+    private static final File ECON_COMMAND =
+            new File("src/main/java/dansplugins/economysystem/commands/EconCommand.java");
+    private static final File CONFIG_SERVICE =
+            new File("src/main/java/dansplugins/economysystem/services/ConfigService.java");
+
+    @Rule
+    public final TemporaryFolder folder = new TemporaryFolder();
 
     @Test
     public void aConfigCarryingEveryRegisteredKey_isNotWritten() throws Exception {
@@ -119,6 +128,74 @@ public class ConfigDefaultsOnDiskTest {
         }
         assertTrue("MedievalEconomy.onEnable() no longer calls ensureDefaultsOnDisk(), so a key added without a"
                 + " version bump reads back as null on an existing config.yml", wired);
+    }
+
+    /**
+     * reloadConfig() drops every registered default, so a reload that stopped there would leave
+     * a key removed from the file reading back as null until the next restart. EconCommand
+     * cannot be constructed here (#119), so the wiring is checked at the source level: both the
+     * player and the console path must go through ConfigService.reload().
+     */
+    @Test
+    public void econReload_goesThroughConfigServiceOnBothPaths() {
+        int reloads = 0;
+        for (String line : read(ECON_COMMAND)) {
+            assertFalse("EconCommand reloads the config directly, so a key removed from config.yml reads back as"
+                    + " null until the next restart: " + line.trim(), line.contains("medievalEconomy.reloadConfig()"));
+            if (line.contains("getConfigService().reload()")) {
+                reloads++;
+            }
+        }
+        assertEquals("the player path and the console path", 2, reloads);
+    }
+
+    /**
+     * Why ConfigService.reload() must check the file first. Bukkit's reloadConfig() loads through
+     * YamlConfiguration.loadConfiguration, which catches a YAML error, logs it and returns an
+     * empty config; the logging needs a running server, so that call cannot be made here. An
+     * empty config lacks every registered key, so without the check, one typo followed by
+     * /econ reload would replace the operator's whole config.yml with the defaults.
+     */
+    @Test
+    public void aFileThatCannotBeParsed_isNotWrittenThoughItsEmptyConfigLacksEveryKey() throws Exception {
+        YamlConfiguration whatBukkitLoadsForIt = load("");
+        whatBukkitLoadsForIt.addDefault("enablingText", "Medieval Economy is enabling...");
+        assertTrue(ConfigService.lacksARegisteredKey(whatBukkitLoadsForIt));
+
+        assertFalse(ConfigService.canBeParsed(write("enablingText: custom\n  badly: indented: value\n")));
+    }
+
+    @Test
+    public void aFileThatParses_mayBeWritten() throws Exception {
+        assertTrue(ConfigService.canBeParsed(write("enablingText: custom\n")));
+    }
+
+    @Test
+    public void anEmptyFile_mayBeWritten() throws Exception {
+        assertTrue(ConfigService.canBeParsed(write("")));
+    }
+
+    @Test
+    public void aDeletedFile_mayBeWritten() {
+        assertTrue(ConfigService.canBeParsed(new File(folder.getRoot(), "config.yml")));
+    }
+
+    @Test
+    public void reload_writesOnlyAFileThatCanBeParsed() {
+        boolean guarded = false;
+        for (String line : read(CONFIG_SERVICE)) {
+            if (line.contains("if (canBeParsed(")) {
+                guarded = true;
+            }
+        }
+        assertTrue("ConfigService.reload() no longer checks the file before writing it, so a YAML error followed"
+                + " by /econ reload replaces the operator's config.yml with the defaults", guarded);
+    }
+
+    private File write(String yaml) throws IOException {
+        File file = folder.newFile();
+        Files.write(file.toPath(), yaml.getBytes(Charset.forName("UTF-8")));
+        return file;
     }
 
     private YamlConfiguration load(String yaml) throws Exception {

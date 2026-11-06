@@ -3,8 +3,11 @@ package dansplugins.economysystem.services;
 import dansplugins.economysystem.MedievalEconomy;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -136,6 +139,41 @@ public class ConfigService {
         if (lacksARegisteredKey(medievalEconomy.getConfig())) {
             medievalEconomy.getConfig().options().copyDefaults(true);
             medievalEconomy.saveConfig();
+        }
+    }
+
+    /**
+     * Reloads config.yml for {@code /econ reload}. reloadConfig() drops every default registered
+     * before it, so they are registered again, or a key removed from the file would read back
+     * as null until the next restart. Bukkit answers a file it cannot parse with an empty config
+     * and a logged error, and that empty config looks like a file lacking every key, so such a
+     * file is not written: that would replace the operator's config.yml, and every setting in
+     * it, with the defaults. onEnable() has no such risk, because the missing version line of an
+     * empty config sends the file to config.yml.old first.
+     */
+    public void reload() {
+        medievalEconomy.reloadConfig();
+        if (canBeParsed(new File(medievalEconomy.getDataFolder(), "config.yml"))) {
+            ensureDefaultsOnDisk();
+        }
+        else {
+            registerDefaults();
+        }
+    }
+
+    /**
+     * Whether the file can be read as YAML. A file that does not exist counts: it holds nothing
+     * to lose, so generating it again is safe.
+     */
+    static boolean canBeParsed(File configFile) {
+        if (!configFile.exists()) {
+            return true;
+        }
+        try {
+            new YamlConfiguration().load(configFile);
+            return true;
+        } catch (IOException | InvalidConfigurationException e) {
+            return false;
         }
     }
 

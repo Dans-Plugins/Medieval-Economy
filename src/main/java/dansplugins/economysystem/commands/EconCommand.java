@@ -61,7 +61,7 @@ public class EconCommand {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (player.hasPermission("medievaleconomy.reload") || player.hasPermission("medievaleconomy.admin")) {
-                        medievalEconomy.reloadConfig();
+                        medievalEconomy.getConfigService().reload();
                         player.sendMessage(ChatColor.GREEN + medievalEconomy.getConfig().getString("configReloadedText"));
                     }
                     else {
@@ -69,7 +69,7 @@ public class EconCommand {
                     }
                 }
                 else {
-                    medievalEconomy.reloadConfig();
+                    medievalEconomy.getConfigService().reload();
                     System.out.println(medievalEconomy.getConfig().getString("configReloadedText"));
                 }
 

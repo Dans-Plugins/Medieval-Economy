@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- `/econ reload` now restores a key missing from `config.yml`, writing it back to the file with its default, as enabling the plugin does. Before, a message key removed from the file was sent as the text `null` until the next restart, and a removed `currencyItemName`, lore line or `titleSeparator` changed the coins the plugin created, so `/deposit` stopped recognizing the coins already in circulation.
+
 ## [2.3.3] – 2026-11-04
 
 ### Changed
