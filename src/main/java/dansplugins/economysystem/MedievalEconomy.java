@@ -175,6 +175,10 @@ public final class MedievalEconomy extends JavaPlugin implements Listener {
         return utilityService;
     }
 
+    public ConfigService getConfigService() {
+        return configService;
+    }
+
     public ArrayList<Coinpurse> getCoinpurses() {
         return coinpurses;
     }

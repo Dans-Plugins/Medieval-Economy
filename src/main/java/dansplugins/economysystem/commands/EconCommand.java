@@ -61,7 +61,7 @@ public class EconCommand {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (player.hasPermission("medievaleconomy.reload") || player.hasPermission("medievaleconomy.admin")) {
-                        medievalEconomy.reloadConfig();
+                        reloadConfig();
                         player.sendMessage(ChatColor.GREEN + medievalEconomy.getConfig().getString("configReloadedText"));
                     }
                     else {
@@ -69,7 +69,7 @@ public class EconCommand {
                     }
                 }
                 else {
-                    medievalEconomy.reloadConfig();
+                    reloadConfig();
                     System.out.println(medievalEconomy.getConfig().getString("configReloadedText"));
                 }
 
@@ -93,6 +93,13 @@ public class EconCommand {
                 medievalEconomy.getUtilityService().sendHelpMessage((Player) sender);
             }
         }
+    }
+
+    // reloadConfig() drops every default registered before it, so a key removed from config.yml
+    // would otherwise read back as null until the next restart
+    private void reloadConfig() {
+        medievalEconomy.reloadConfig();
+        medievalEconomy.getConfigService().ensureDefaultsOnDisk();
     }
 
     static String composeUnknownSubcommandMessage(String subcommand) {

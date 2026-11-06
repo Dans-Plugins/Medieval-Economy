@@ -129,7 +129,8 @@ public class ConfigService {
      * otherwise never learn a key added since and would read it back as null. A file that
      * already carries every key is left untouched, so a hand-edited config is not rewritten
      * on every startup; when a key is missing the write keeps every value already there and
-     * appends the defaults, including the bundled usage-reporting block.
+     * appends the defaults, including the bundled usage-reporting block. {@code /econ reload}
+     * runs this as well, because reloading drops the defaults registered on enable.
      */
     public void ensureDefaultsOnDisk() {
         registerDefaults();

@@ -24,12 +24,14 @@ import static org.junit.Assert.assertTrue;
  * against YamlConfiguration through the static check the method delegates to, the way
  * UsageReportingConfigTest measures the getter fall-through; the wiring in
  * MedievalEconomy.onEnable() is checked at the source level, as ConfigDefaultsTest checks
- * the registrations.
+ * the registrations. The same check covers EconCommand's /econ reload.
  */
 public class ConfigDefaultsOnDiskTest {
 
     private static final File MEDIEVAL_ECONOMY =
             new File("src/main/java/dansplugins/economysystem/MedievalEconomy.java");
+    private static final File ECON_COMMAND =
+            new File("src/main/java/dansplugins/economysystem/commands/EconCommand.java");
 
     @Test
     public void aConfigCarryingEveryRegisteredKey_isNotWritten() throws Exception {
@@ -119,6 +121,27 @@ public class ConfigDefaultsOnDiskTest {
         }
         assertTrue("MedievalEconomy.onEnable() no longer calls ensureDefaultsOnDisk(), so a key added without a"
                 + " version bump reads back as null on an existing config.yml", wired);
+    }
+
+    /**
+     * reloadConfig() drops every registered default, so a reload that stopped there would leave
+     * a key removed from the file reading back as null until the next restart. EconCommand
+     * cannot be constructed here (#119), so the wiring is checked at the source level: every
+     * reload must be followed straight away by the step that registers the defaults again.
+     */
+    @Test
+    public void econReload_ensuresTheDefaultsOnDiskStraightAfterEveryReload() {
+        List<String> lines = read(ECON_COMMAND);
+        int reloads = 0;
+        for (int i = 0; i < lines.size(); i++) {
+            if (lines.get(i).contains("medievalEconomy.reloadConfig()")) {
+                reloads++;
+                assertTrue("line " + (i + 1) + " of EconCommand reloads the config without ensuring the defaults,"
+                                + " so a key removed from config.yml reads back as null until the next restart",
+                        i + 1 < lines.size() && lines.get(i + 1).contains(".ensureDefaultsOnDisk()"));
+            }
+        }
+        assertTrue("EconCommand no longer calls medievalEconomy.reloadConfig(), so this check saw nothing", reloads > 0);
     }
 
     private YamlConfiguration load(String yaml) throws Exception {
