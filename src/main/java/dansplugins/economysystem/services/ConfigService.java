@@ -99,6 +99,7 @@ public class ConfigService {
         medievalEconomy.getConfig().addDefault("createCurrencyNoPermission", "You need the following permission to use this command: 'medievaleconomy.createcurrency'");
         medievalEconomy.getConfig().addDefault("createCurrencyNoRunFromConsole", "You can't run this command from the console!");
         medievalEconomy.getConfig().addDefault("configReloadedText", "Config reloaded!");
+        medievalEconomy.getConfig().addDefault("configReloadFailedText", "config.yml could not be read, so every setting is on its default until the file is fixed and reloaded. The server console shows the error.");
         medievalEconomy.getConfig().addDefault("reloadNoPermission", "You need the following permission to use this command: 'medievaleconomy.reload'");
         medievalEconomy.getConfig().addDefault("withdrawUsageText", "Usage: /withdraw (whole number)");
         medievalEconomy.getConfig().addDefault("withdrawPositiveText", "Number must be positive!");
@@ -150,15 +151,18 @@ public class ConfigService {
      * file is not written: that would replace the operator's config.yml, and every setting in
      * it, with the defaults. onEnable() has no such risk, because the missing version line of an
      * empty config sends the file to config.yml.old first.
+     *
+     * @return whether config.yml was read; false means every key is on its default until the
+     *         file is fixed and reloaded
      */
-    public void reload() {
+    public boolean reload() {
         medievalEconomy.reloadConfig();
         if (canBeParsed(new File(medievalEconomy.getDataFolder(), "config.yml"))) {
             ensureDefaultsOnDisk();
+            return true;
         }
-        else {
-            registerDefaults();
-        }
+        registerDefaults();
+        return false;
     }
 
     /**

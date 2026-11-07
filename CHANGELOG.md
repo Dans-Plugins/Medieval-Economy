@@ -8,7 +8,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- `/econ reload` now says so when `config.yml` has a YAML error and could not be read, through the new `configReloadFailedText` message. Before, it replied `Config reloaded!`, and the only sign of the failure was the error in the server console.
+
+### Changed
+
+- `ConfigService.reload()` now returns whether `config.yml` was read. A plugin compiled against the 2.4.0 method, which returned nothing, must be recompiled.
+
+## [2.4.0] – 2026-11-07
+
+### Fixed
+
 - `/econ reload` now restores a key missing from `config.yml`, writing it back to the file with its default, as enabling the plugin does. Before, a message key removed from the file was sent as the text `null` until the next restart, and a removed `currencyItemName`, lore line or `titleSeparator` changed the coins the plugin created, so `/deposit` stopped recognizing the coins already in circulation.
+
+## [2.3.4] – 2026-11-05
+
+### Changed
+
+- `COMMANDS.md`, `USER_GUIDE.md` and `CONFIG.md` now describe the permissions each command also accepts, that `/econ reload` does not apply `usage-reporting` settings, and when `storageLoadError` is printed. The plugin's behavior did not change in this release.
 
 ## [2.3.3] – 2026-11-04
 
