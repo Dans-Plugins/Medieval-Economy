@@ -6,9 +6,9 @@ the next time the plugin is enabled or `/econ reload` is run. The values already
 kept, and a file that carries every key is not rewritten. To go back to a default, remove its line
 and run `/econ reload`. If the file has a YAML error, `/econ reload` does not write to it and
 answers with `configReloadFailedText`: the server log shows the error, and the plugin uses the
-defaults for every key until the file is fixed and reloaded. When the plugin version changes, a copy of the previous file is kept as
-`config.yml.old` and `version` is updated to the running plugin; every other value already in the
-file is kept.
+defaults for every key until the file is fixed and reloaded. When the plugin version changes, a
+copy of the previous file is kept as `config.yml.old` and `version` is updated to the running
+plugin; every other value already in the file is kept.
 
 ## Options
 
