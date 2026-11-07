@@ -150,6 +150,41 @@ public class ConfigDefaultsOnDiskTest {
     }
 
     /**
+     * /econ reload used to answer "Config reloaded!" for a file it could not read, because
+     * ConfigService.reload() reported nothing. Both paths must act on its answer. EconCommand
+     * cannot be constructed here (#119), so this is checked at the source level as above.
+     */
+    @Test
+    public void econReload_actsOnWhetherTheFileWasRead() {
+        for (String line : read(ECON_COMMAND)) {
+            if (line.contains("getConfigService().reload()")) {
+                assertTrue("EconCommand discards the result of the reload, so a file that could not be read is"
+                        + " reported as reloaded: " + line.trim(), line.contains("if ("));
+            }
+        }
+    }
+
+    /**
+     * A failed reload leaves only the defaults in memory, so the failure text has to be read
+     * before the reload runs, or a custom value could never be shown.
+     */
+    @Test
+    public void econReload_readsTheFailureTextBeforeEachReload() {
+        int textReads = 0;
+        int reloads = 0;
+        for (String line : read(ECON_COMMAND)) {
+            if (line.contains("getString(\"configReloadFailedText\")")) {
+                textReads++;
+            }
+            if (line.contains("getConfigService().reload()")) {
+                reloads++;
+                assertEquals("the failure text must be read before reload number " + reloads, reloads, textReads);
+            }
+        }
+        assertEquals("the player path and the console path", 2, textReads);
+    }
+
+    /**
      * Why ConfigService.reload() must check the file first. Bukkit's reloadConfig() loads through
      * YamlConfiguration.loadConfiguration, which catches a YAML error, logs it and returns an
      * empty config; the logging needs a running server, so that call cannot be made here. An

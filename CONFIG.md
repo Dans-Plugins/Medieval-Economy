@@ -4,9 +4,9 @@ The configuration file is generated at `plugins/MedievalEconomy/config.yml` on f
 file lacks, whether added by a later build or removed by hand, is appended to it with its default
 the next time the plugin is enabled or `/econ reload` is run. The values already in the file are
 kept, and a file that carries every key is not rewritten. To go back to a default, remove its line
-and run `/econ reload`. If the file has a YAML error, `/econ reload` does not write to it: the
-server log shows the error, and the plugin uses the defaults for every key until the file is fixed
-and reloaded. When the plugin version changes, a copy of the previous file is kept as
+and run `/econ reload`. If the file has a YAML error, `/econ reload` does not write to it and
+answers with `configReloadFailedText`: the server log shows the error, and the plugin uses the
+defaults for every key until the file is fixed and reloaded. When the plugin version changes, a copy of the previous file is kept as
 `config.yml.old` and `version` is updated to the running plugin; every other value already in the
 file is kept.
 
@@ -21,6 +21,7 @@ file is kept.
 | `disabledText` | `Medieval Economy is disabled!` | Console message shown once the plugin has disabled. |
 | `compatibilityText` | `[ALERT] Old save folder name (pre v3.2) detected. Updating for compatibility.` | Console message printed at startup when `plugins/Medieval-Economy/`, the save folder used before v0.7, exists. The saves in it are migrated to `plugins/MedievalEconomy/` only if that folder does not exist yet; otherwise the message is printed and nothing is moved. The "pre v3.2" in the default text is not the version the folder was renamed in. |
 | `configReloadedText` | `Config reloaded!` | Message shown after `/econ reload` succeeds. |
+| `configReloadFailedText` | `config.yml could not be read, so every setting is on its default until the file is fixed and reloaded. The server console shows the error.` | Error shown when `/econ reload` finds a YAML error in `config.yml`. The broken file cannot supply this message, so the value in use before the reload is shown; once a reload has failed, that is the default, until the file is fixed and reloaded. |
 | `reloadNoPermission` | `You need the following permission to use this command: 'medievaleconomy.reload'` | Error shown when `/econ reload` is used without permission. |
 | `createCurrencyUsageText` | `Usage: /econ createcurrency (whole number)` | Usage hint shown when `/econ createcurrency` is given something other than a whole number. |
 | `createCurrencyPositiveText` | `Number must be positive!` | Error when `/econ createcurrency` is given an amount below 1. |
