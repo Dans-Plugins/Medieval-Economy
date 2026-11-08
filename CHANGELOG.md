@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [2.5.0] – 2026-11-08
+
 ### Fixed
 
 - `/econ reload` now says so when `config.yml` has a YAML error and could not be read, through the new `configReloadFailedText` message. Before, it replied `Config reloaded!`, and the only sign of the failure was the error in the server console.
