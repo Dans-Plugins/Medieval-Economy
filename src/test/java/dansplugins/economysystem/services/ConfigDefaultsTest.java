@@ -23,7 +23,8 @@ import static org.junit.Assert.assertTrue;
  * Guards the configuration surface against the two ways it has drifted before: a key
  * registered twice (where the later registration silently overwrites the earlier one, so
  * the value a generated config.yml receives is not the value anyone read in the source),
- * and CONFIG.md describing keys or defaults the plugin does not actually register.
+ * and CONFIG.md describing keys or defaults the plugin does not actually register. It also
+ * checks that every key the source reads is registered, so none of them can read back as null.
  *
  * ConfigService cannot be executed here — saveConfigDefaults needs a live plugin instance
  * for getConfig() — so its registrations are read from the source file, the same way
@@ -39,6 +40,8 @@ public class ConfigDefaultsTest {
 
     private static final Pattern REGISTRATION = Pattern.compile("addDefault\\(\"([^\"]+)\",(.*)\\);");
     private static final Pattern STRING_LITERAL = Pattern.compile("\"([^\"]*)\"");
+    private static final File MAIN_SOURCES = new File("src/main/java");
+    private static final Pattern CONFIG_READ = Pattern.compile("getConfig\\(\\)\\.get\\w+\\(\"([^\"]+)\"");
 
     @Test
     public void noKeyIsRegisteredTwice() {
@@ -76,6 +79,17 @@ public class ConfigDefaultsTest {
             assertEquals(documented.getKey() + " is documented with a default the plugin does not register",
                     documented.getValue(), value);
         }
+    }
+
+    /**
+     * A key the plugin reads but never registers has no default to fall through to, so it reads
+     * back as null (a message key is then sent as the text "null") on any config.yml that lacks
+     * it, and ensureDefaultsOnDisk never writes it, because it only writes registered keys.
+     */
+    @Test
+    public void everyKeyReadInTheSourceIsRegistered() {
+        assertEquals("keys read through getConfig() but never registered in ConfigService",
+                new TreeSet<String>(), missing(keysReadInTheSource(), registeredDefaults().keySet()));
     }
 
     private Set<String> missing(Set<String> expected, Set<String> actual) {
@@ -162,6 +176,40 @@ public class ConfigDefaultsTest {
             return null;
         }
         return cell.substring(start + 1, end);
+    }
+
+    /**
+     * @return every key passed as a string literal to a getConfig() getter anywhere under
+     *         src/main/java. The usage-reporting keys are read through constants and are pinned
+     *         by UsageReportingConfigTest instead.
+     */
+    private Set<String> keysReadInTheSource() {
+        Set<String> keys = new TreeSet<String>();
+        List<File> sources = new ArrayList<File>();
+        collectJavaFiles(MAIN_SOURCES, sources);
+        for (File source : sources) {
+            for (String line : read(source)) {
+                Matcher matcher = CONFIG_READ.matcher(line);
+                while (matcher.find()) {
+                    keys.add(matcher.group(1));
+                }
+            }
+        }
+        assertTrue("no getConfig() reads were found under " + MAIN_SOURCES, keys.size() > 0);
+        return keys;
+    }
+
+    private void collectJavaFiles(File directory, List<File> into) {
+        File[] children = directory.listFiles();
+        assertTrue(directory + " could not be listed; tests are expected to run from the project root",
+                children != null);
+        for (File child : children) {
+            if (child.isDirectory()) {
+                collectJavaFiles(child, into);
+            } else if (child.getName().endsWith(".java")) {
+                into.add(child);
+            }
+        }
     }
 
     private List<String> read(File file) {
