@@ -25,6 +25,8 @@ A player normally has no coinpurse only on their first join. A player whose coin
 
 If the player does not rejoin, the record is lost from the index instead. `coinpurse-record-filenames.txt` is rewritten each time the server stops, from the coinpurses the server holds, which do not include the unreadable record, so its filename is dropped and the file in `Coinpurse-Records/` is not read on later starts. If you repair the record after the server has stopped once, add its filename (`<uuid>.txt`) back to `coinpurse-record-filenames.txt` as well, with the server stopped, so that the next start loads it.
 
+A player who is already online when the plugin is enabled, for example when it is loaded or reloaded while the server is running, is not seen joining, so no starter kit is given and no coinpurse is assigned to a player who has none. Until one is created, `/balance` answers them with the `balanceNoCoinpurse` message. An empty coinpurse is created for them the first time they die, run `/withdraw` with a whole number above zero, or `/deposit` coins they actually hold; after that, their next join gives no starter kit. If their record could not be read, it is that coinpurse which is saved over it when the server stops, so for a player who is online, repair or restore the record before any of those happen.
+
 ## Death Penalty
 
 When a player with coins in their coinpurse dies, 10% of their coinpurse, rounded down (or 1 coin if their balance is below 10), is removed and dropped on the ground as physical coins.

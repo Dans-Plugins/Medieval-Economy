@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- `USER_GUIDE.md` now describes a player who is already online when the plugin is enabled: no starter kit is given, `/balance` answers with `balanceNoCoinpurse`, and an empty coinpurse is created on their first death, `/withdraw` or `/deposit`, which is saved over a record that could not be read. The plugin's behavior did not change.
+
 ## [2.5.0] – 2026-11-08
 
 ### Fixed
