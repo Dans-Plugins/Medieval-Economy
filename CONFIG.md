@@ -10,6 +10,14 @@ defaults for every key until the file is fixed and reloaded. When the plugin ver
 copy of the previous file is kept as `config.yml.old` and `version` is updated to the running
 plugin; every other value already in the file is kept.
 
+A YAML error found when the plugin is enabled, at a server start or a plugin reload, is handled
+differently from one found by `/econ reload`. The broken file reads back as empty, with no
+`version` line, so it is treated as a version change: it is kept as `config.yml.old`, and a new
+`config.yml` holding the default for every key is written in its place. Fix the error in
+`config.yml.old` and copy it back over `config.yml`, then run `/econ reload`. The console alert
+printed at that point says the values already set are kept, but none could be read from the
+broken file, so every setting is on its default.
+
 ## Options
 
 | Key | Default | Description |

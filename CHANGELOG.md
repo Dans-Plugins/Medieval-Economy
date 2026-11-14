@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - `USER_GUIDE.md` now describes a player who is already online when the plugin is enabled: no starter kit is given, `/balance` answers with `balanceNoCoinpurse`, and an empty coinpurse is created on their first death, `/withdraw` or `/deposit`, which is saved over a record that could not be read. The plugin's behavior did not change.
+- `USER_GUIDE.md` now says where coinpurse balances are stored and that they are written only when the plugin is disabled, so a crash loses the balance changes made since the plugin was last enabled. `CONFIG.md` now says that a `config.yml` with a YAML error found when the plugin is enabled is kept as `config.yml.old` and replaced by one holding every default. The plugin's behavior did not change.
 
 ## [2.5.0] – 2026-11-08
 

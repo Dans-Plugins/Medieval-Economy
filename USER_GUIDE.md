@@ -31,6 +31,12 @@ A player who is already online when the plugin is enabled, for example when it i
 
 When a player with coins in their coinpurse dies, 10% of their coinpurse, rounded down (or 1 coin if their balance is below 10), is removed and dropped on the ground as physical coins.
 
+## Where Balances Are Stored
+
+Each coinpurse is stored in `plugins/MedievalEconomy/Coinpurse-Records/<uuid>.txt`, with the player's UUID on the first line and their balance on the second. `plugins/MedievalEconomy/coinpurse-record-filenames.txt` lists the records to load at startup, one filename per line.
+
+Balances are held in memory while the server runs and are written to these files only when the plugin is disabled, which normally happens when the server stops. A server that crashes or is killed without stopping cleanly loses every balance change made since the plugin was last enabled: deposits, withdrawals and death penalties, and the coinpurses of players who joined for the first time in that period. Player inventories are saved by the server on its own schedule, not with the coinpurses, so after such a crash a deposit may have taken coins from an inventory without them reaching the coinpurse, and a withdrawal may have put coins in an inventory without them leaving the coinpurse.
+
 ## Permissions
 
 | Permission | Default | Description |
