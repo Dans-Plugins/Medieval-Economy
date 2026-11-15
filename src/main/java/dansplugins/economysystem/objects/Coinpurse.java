@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.function.Function;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -134,21 +135,44 @@ public class Coinpurse {
             File loadFile = new File("./plugins/MedievalEconomy/Coinpurse-Records/" + filename);
             Scanner loadReader = new Scanner(loadFile);
 
-            // actual loading
-            if (loadReader.hasNextLine()) {
-                String playerName = loadReader.nextLine();
-
-                uuid = medievalEconomy.findUUIDBasedOnPlayerName(playerName);
-            }
-
-            if (loadReader.hasNextLine()) {
-                numCoins = Integer.parseInt(loadReader.nextLine());
-            }
+            boolean parsed = readLegacyRecord(loadReader, MedievalEconomy::findUUIDBasedOnPlayerName);
 
             loadReader.close();
-            loadFile.delete();
+            if (parsed) {
+                loadFile.delete();
+            }
+            else {
+                // kept on disk so it can be repaired by hand
+                System.out.println(medievalEconomy.getConfig().getString("coinpurseLoadErrorText") + filename);
+            }
         } catch (FileNotFoundException e) {
             System.out.println(medievalEconomy.getConfig().getString("coinpurseLoadErrorText") + filename);
+        }
+    }
+
+    /**
+     * Reads a pre-v0.7 record: the player's name on the first line, the balance on the second.
+     * A balance that is not a whole number leaves this coinpurse with no UUID and no coins, so
+     * legacyLoadCoinpurses skips it and goes on to the next record. Before, the
+     * NumberFormatException escaped onEnable and stopped the plugin enabling part-way.
+     *
+     * @param resolveName turns the stored player name into a UUID, or null if the name is unknown
+     * @return false if the balance could not be parsed
+     */
+    boolean readLegacyRecord(Scanner reader, Function<String, UUID> resolveName) {
+        try {
+            if (reader.hasNextLine()) {
+                uuid = resolveName.apply(reader.nextLine());
+            }
+
+            if (reader.hasNextLine()) {
+                numCoins = Integer.parseInt(reader.nextLine());
+            }
+            return true;
+        } catch (NumberFormatException e) {
+            uuid = null;
+            numCoins = 0;
+            return false;
         }
     }
 }
