@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- When a pre-v0.7 save folder is migrated, a coinpurse record whose second line is not a whole number is now skipped with the `coinpurseLoadErrorText` message and left on disk to be repaired, and the remaining records still load. Before, it stopped the plugin enabling part-way, leaving every record after it unmigrated.
+
 ### Changed
 
 - `USER_GUIDE.md` now describes a player who is already online when the plugin is enabled: no starter kit is given, `/balance` answers with `balanceNoCoinpurse`, and an empty coinpurse is created on their first death, `/withdraw` or `/deposit`, which is saved over a record that could not be read. The plugin's behavior did not change.
