@@ -99,7 +99,7 @@ public class ConfigService {
         medievalEconomy.getConfig().addDefault("createCurrencyNoPermission", "You need the following permission to use this command: 'medievaleconomy.createcurrency'");
         medievalEconomy.getConfig().addDefault("createCurrencyNoRunFromConsole", "You can't run this command from the console!");
         medievalEconomy.getConfig().addDefault("configReloadedText", "Config reloaded!");
-        medievalEconomy.getConfig().addDefault("configReloadFailedText", "config.yml could not be read, so every setting is on its default until the file is fixed and reloaded. The server console shows the error.");
+        medievalEconomy.getConfig().addDefault("configReloadFailedText", "config.yml could not be read, so the settings in use before the reload are kept until the file is fixed and reloaded. The server console shows the error.");
         medievalEconomy.getConfig().addDefault("reloadNoPermission", "You need the following permission to use this command: 'medievaleconomy.reload'");
         medievalEconomy.getConfig().addDefault("withdrawUsageText", "Usage: /withdraw (whole number)");
         medievalEconomy.getConfig().addDefault("withdrawPositiveText", "Number must be positive!");
@@ -144,25 +144,29 @@ public class ConfigService {
     }
 
     /**
-     * Reloads config.yml for {@code /econ reload}. reloadConfig() drops every default registered
-     * before it, so they are registered again, or a key removed from the file would read back
-     * as null until the next restart. Bukkit answers a file it cannot parse with an empty config
-     * and a logged error, and that empty config looks like a file lacking every key, so such a
-     * file is not written: that would replace the operator's config.yml, and every setting in
-     * it, with the defaults. onEnable() has no such risk, because the missing version line of an
-     * empty config sends the file to config.yml.old first.
+     * Reloads config.yml for {@code /econ reload}. The file is checked before reloadConfig()
+     * runs: Bukkit answers a file it cannot parse with an empty config, so reloading such a file
+     * would replace the values in memory with the defaults, and a server that customizes
+     * {@code currencyItemName} or the lore would stop accepting its own coins for /deposit.
+     * A file that cannot be parsed is therefore not loaded and not written, and the values in
+     * memory stay in use. reloadConfig() drops every default registered before it, so they are
+     * registered again by ensureDefaultsOnDisk(), or a key removed from the file would read back
+     * as null until the next restart.
      *
-     * @return whether config.yml was read; false means every key is on its default until the
-     *         file is fixed and reloaded
+     * @return whether config.yml was read; false means the values in use before the reload are
+     *         kept until the file is fixed and reloaded
      */
     public boolean reload() {
-        medievalEconomy.reloadConfig();
-        if (canBeParsed(new File(medievalEconomy.getDataFolder(), "config.yml"))) {
-            ensureDefaultsOnDisk();
-            return true;
+        File configFile = new File(medievalEconomy.getDataFolder(), "config.yml");
+        String parseError = parseError(configFile);
+        if (parseError != null) {
+            // reloadConfig() is not called, so Bukkit does not log the error; log it here
+            medievalEconomy.getLogger().severe("Could not read " + configFile + ", so the settings in use are kept: " + parseError);
+            return false;
         }
-        registerDefaults();
-        return false;
+        medievalEconomy.reloadConfig();
+        ensureDefaultsOnDisk();
+        return true;
     }
 
     /**
@@ -170,14 +174,21 @@ public class ConfigService {
      * to lose, so generating it again is safe.
      */
     static boolean canBeParsed(File configFile) {
+        return parseError(configFile) == null;
+    }
+
+    /**
+     * Why the file cannot be read as YAML, or null if it can (or does not exist).
+     */
+    static String parseError(File configFile) {
         if (!configFile.exists()) {
-            return true;
+            return null;
         }
         try {
             new YamlConfiguration().load(configFile);
-            return true;
+            return null;
         } catch (IOException | InvalidConfigurationException e) {
-            return false;
+            return String.valueOf(e.getMessage());
         }
     }
 
