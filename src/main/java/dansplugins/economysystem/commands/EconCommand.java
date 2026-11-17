@@ -61,14 +61,11 @@ public class EconCommand {
                 if (sender instanceof Player) {
                     Player player = (Player) sender;
                     if (player.hasPermission("medievaleconomy.reload") || player.hasPermission("medievaleconomy.admin")) {
-                        // read first: a failed reload leaves only the defaults in memory, so reading
-                        // the text afterwards could never give an operator's own wording
-                        String reloadFailedText = medievalEconomy.getConfig().getString("configReloadFailedText");
                         if (medievalEconomy.getConfigService().reload()) {
                             player.sendMessage(ChatColor.GREEN + medievalEconomy.getConfig().getString("configReloadedText"));
                         }
                         else {
-                            player.sendMessage(ChatColor.RED + reloadFailedText);
+                            player.sendMessage(ChatColor.RED + medievalEconomy.getConfig().getString("configReloadFailedText"));
                         }
                     }
                     else {
@@ -76,12 +73,11 @@ public class EconCommand {
                     }
                 }
                 else {
-                    String reloadFailedText = medievalEconomy.getConfig().getString("configReloadFailedText");
                     if (medievalEconomy.getConfigService().reload()) {
                         System.out.println(medievalEconomy.getConfig().getString("configReloadedText"));
                     }
                     else {
-                        System.out.println(reloadFailedText);
+                        System.out.println(medievalEconomy.getConfig().getString("configReloadFailedText"));
                     }
                 }
 

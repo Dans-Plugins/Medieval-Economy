@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- `/econ reload` now keeps the settings in use when `config.yml` has a YAML error, and logs the error itself. Before, it put every setting on its default until the file was fixed and reloaded, so on a server that customizes `currencyItemName` or the lore, coins already in circulation could not be deposited in the meantime, and coins created in that state kept the default name and lore. The default `configReloadFailedText` now says the settings are kept; a `config.yml` written by an earlier version keeps the old wording until its `configReloadFailedText` line is removed and `/econ reload` is run.
 - When a pre-v0.7 save folder is migrated, a coinpurse record whose second line is not a whole number is now skipped with the `coinpurseLoadErrorText` message and left on disk to be repaired, and the remaining records still load. Before, it stopped the plugin enabling part-way, leaving every record after it unmigrated.
 
 ### Changed

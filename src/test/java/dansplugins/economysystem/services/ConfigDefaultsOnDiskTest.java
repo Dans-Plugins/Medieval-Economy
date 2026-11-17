@@ -165,31 +165,12 @@ public class ConfigDefaultsOnDiskTest {
     }
 
     /**
-     * A failed reload leaves only the defaults in memory, so the failure text has to be read
-     * before the reload runs, or a custom value could never be shown.
-     */
-    @Test
-    public void econReload_readsTheFailureTextBeforeEachReload() {
-        int textReads = 0;
-        int reloads = 0;
-        for (String line : read(ECON_COMMAND)) {
-            if (line.contains("getString(\"configReloadFailedText\")")) {
-                textReads++;
-            }
-            if (line.contains("getConfigService().reload()")) {
-                reloads++;
-                assertEquals("the failure text must be read before reload number " + reloads, reloads, textReads);
-            }
-        }
-        assertEquals("the player path and the console path", 2, textReads);
-    }
-
-    /**
      * Why ConfigService.reload() must check the file first. Bukkit's reloadConfig() loads through
      * YamlConfiguration.loadConfiguration, which catches a YAML error, logs it and returns an
      * empty config; the logging needs a running server, so that call cannot be made here. An
      * empty config lacks every registered key, so without the check, one typo followed by
-     * /econ reload would replace the operator's whole config.yml with the defaults.
+     * /econ reload would replace the operator's whole config.yml with the defaults, and the
+     * values in memory with them.
      */
     @Test
     public void aFileThatCannotBeParsed_isNotWrittenThoughItsEmptyConfigLacksEveryKey() throws Exception {
@@ -216,15 +197,56 @@ public class ConfigDefaultsOnDiskTest {
     }
 
     @Test
-    public void reload_writesOnlyAFileThatCanBeParsed() {
-        boolean guarded = false;
-        for (String line : read(CONFIG_SERVICE)) {
-            if (line.contains("if (canBeParsed(")) {
-                guarded = true;
+    public void aFileThatCannotBeParsed_hasItsErrorReported() throws Exception {
+        String error = ConfigService.parseError(write("enablingText: custom\n  badly: indented: value\n"));
+        assertTrue("the error is logged in place of the one Bukkit would have logged", error != null && !error.isEmpty());
+    }
+
+    @Test
+    public void aFileThatParses_hasNoError() throws Exception {
+        assertEquals(null, ConfigService.parseError(write("enablingText: custom\n")));
+    }
+
+    /**
+     * Bukkit loads a file it cannot parse as an empty config, so a reload that called
+     * reloadConfig() before checking the file would put every key on its default in memory,
+     * and a server that customizes currencyItemName or the lore would stop accepting its own
+     * coins for /deposit (#209). reload() needs a running plugin, so the order is checked at the
+     * source level: inside reload(), the check and its early return come before reloadConfig().
+     */
+    @Test
+    public void reload_checksTheFileBeforeReplacingTheValuesInMemory() {
+        boolean inReload = false;
+        int checkLine = -1;
+        int returnFalseLine = -1;
+        int reloadConfigLine = -1;
+        List<String> lines = read(CONFIG_SERVICE);
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            if (line.contains("public boolean reload()")) {
+                inReload = true;
+            }
+            else if (inReload && line.startsWith("    }")) {
+                break;
+            }
+            if (!inReload) {
+                continue;
+            }
+            if (checkLine < 0 && line.contains("parseError(configFile)")) {
+                checkLine = i;
+            }
+            if (returnFalseLine < 0 && line.contains("return false;")) {
+                returnFalseLine = i;
+            }
+            if (reloadConfigLine < 0 && line.contains("medievalEconomy.reloadConfig()")) {
+                reloadConfigLine = i;
             }
         }
-        assertTrue("ConfigService.reload() no longer checks the file before writing it, so a YAML error followed"
-                + " by /econ reload replaces the operator's config.yml with the defaults", guarded);
+        assertTrue("ConfigService.reload() no longer checks the file", checkLine >= 0);
+        assertTrue("ConfigService.reload() no longer calls reloadConfig()", reloadConfigLine >= 0);
+        assertTrue("ConfigService.reload() no longer returns early for a file it cannot read", returnFalseLine >= 0);
+        assertTrue("ConfigService.reload() reloads before checking the file, so a YAML error followed by"
+                + " /econ reload puts every setting on its default", checkLine < returnFalseLine && returnFalseLine < reloadConfigLine);
     }
 
     private File write(String yaml) throws IOException {
