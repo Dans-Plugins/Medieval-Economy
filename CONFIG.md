@@ -59,7 +59,7 @@ the error, then restart the server or run `/econ reload`.
 | `coinpurseLoadErrorText` | `An error occurred loading ` | Console message prefix, followed by the record's filename, shown when a single coinpurse record is missing or cannot be read. The record is skipped and the rest still load. |
 | `storageSaveError` | `An error occurred while saving coinpurse record filenames.` | Console message shown when the coinpurse filename index fails to save. |
 | `storageLoadError` | `Error loading the coinpurse records!` | Console message shown when the coinpurse filename index fails to load. It also appears on the first start of a fresh install, when no index has been written yet, and is harmless there. |
-| `usage-reporting.enabled` | `true` | Whether the plugin reports usage events (see below). Set to `false` to turn it off. |
+| `usage-reporting.enabled` | `true` | Whether the plugin reports usage events (see below). Set to `false` to turn it off. Other spellings of the block or the switch (`usage_reporting:`, `usageReporting:`, `enable: false`, `disabled: true`), or `usage-reporting: false`, also count as off. |
 | `usage-reporting.endpoint` | `https://trace.danielstephenson.dev` | The trace server events are sent to. |
 | `usage-reporting.key` | `v9jS7yhG5qIdX8rvSNGNTJvfIHQMe5jPy4Xt5J0UBpA` | Identifies this plugin to the trace server so reports are attributed to it. Not a secret: it ships in the default config and can only report as MedievalEconomy. Empty means reporting is off regardless of `enabled`. |
 
