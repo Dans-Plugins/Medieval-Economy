@@ -1,6 +1,7 @@
 package dansplugins.economysystem.services;
 
 import dansplugins.economysystem.MedievalEconomy;
+import dansplugins.economysystem.trace.UsageReportingSetting;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -13,7 +14,6 @@ import java.io.IOException;
  * @author Daniel McCoy Stephenson
  */
 public class ConfigService {
-    private static final String USAGE_REPORTING_ENABLED_KEY = "usage-reporting.enabled";
     private static final String USAGE_REPORTING_ENDPOINT_KEY = "usage-reporting.endpoint";
     private static final String USAGE_REPORTING_KEY_KEY = "usage-reporting.key";
     private static final String DEFAULT_USAGE_REPORTING_ENDPOINT = "https://trace.danielstephenson.dev";
@@ -49,7 +49,16 @@ public class ConfigService {
     public void renameConfigToConfigDotOldAndSaveDefaults() {
         // save old config as config.yml.old
         File saveFile = new File("./plugins/MedievalEconomy/config.yml");
+        if (UsageReportingSetting.isUnparseable(saveFile)) {
+            // Bukkit loaded it as empty, which is why no version was found. Moving it aside and
+            // writing the defaults would replace every setting, usage-reporting opt-out included.
+            medievalEconomy.getLogger().severe("config.yml could not be read, so it was not replaced. Fix the YAML error"
+                    + " in it and restart; until then the defaults are used, and usage reporting is off.");
+            return;
+        }
         if (saveFile.exists()) {
+            // The file is about to be moved aside, so an opt-out written in it is carried over now.
+            UsageReportingSetting.keepOptOutFromDisk(medievalEconomy.getConfig(), saveFile);
 
             // rename file
             File newSaveFile = new File("./plugins/MedievalEconomy/config.yml.old");
@@ -166,6 +175,11 @@ public class ConfigService {
         }
         medievalEconomy.reloadConfig();
         ensureDefaultsOnDisk();
+        // An operator who turned reporting off and reloaded has it stop now, not at the next
+        // restart. Turning it back on still waits for a restart.
+        if (!isUsageReportingEnabled()) {
+            medievalEconomy.stopUsageReporting();
+        }
         return true;
     }
 
@@ -226,8 +240,12 @@ public class ConfigService {
     // YamlConfiguration, not assumed. ensureDefaultsOnDisk() writes the block onto disk on
     // enable, so the fall-through is only needed until that has run once.
 
+    // Not getBoolean(): it returns the default true for a quoted "false" or any other value
+    // that is not a YAML boolean. Only a value that clearly means "on" turns reporting on, and
+    // an opt-out in the file on disk (or a file that cannot be parsed) always wins.
     public boolean isUsageReportingEnabled() {
-        return medievalEconomy.getConfig().getBoolean(USAGE_REPORTING_ENABLED_KEY);
+        return UsageReportingSetting.isEnabled(medievalEconomy.getConfig(),
+                new File(medievalEconomy.getDataFolder(), "config.yml"));
     }
 
     public String getUsageReportingEndpoint() {
