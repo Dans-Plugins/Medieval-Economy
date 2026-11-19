@@ -10,13 +10,10 @@ the settings it had before the reload until the file is fixed and reloaded. When
 copy of the previous file is kept as `config.yml.old` and `version` is updated to the running
 plugin; every other value already in the file is kept.
 
-A YAML error found when the plugin is enabled, at a server start or a plugin reload, is handled
-differently from one found by `/econ reload`. The broken file reads back as empty, with no
-`version` line, so it is treated as a version change: it is kept as `config.yml.old`, and a new
-`config.yml` holding the default for every key is written in its place. Fix the error in
-`config.yml.old` and copy it back over `config.yml`, then run `/econ reload`. The console alert
-printed at that point says the values already set are kept, but none could be read from the
-broken file, so every setting is on its default.
+A YAML error found when the plugin is enabled, at a server start or a plugin reload, is left for
+the operator to fix: the file is neither moved aside nor written over, and the console logs that it
+could not be read. Until it is fixed, every setting is on its default and usage reporting is off. Fix
+the error, then restart the server or run `/econ reload`.
 
 ## Options
 
@@ -83,8 +80,16 @@ switches win over that setting: `enabled: false` in `plugins/trace/config.yml` t
 for every plugin on the server that reports to trace (the file is written by the first such plugin
 to start), and the environment variables `TRACE_USAGE_REPORTING=off` and `DO_NOT_TRACK=1` turn it
 off for the whole process. The plugin says on every startup whether reporting is on, and why it is
-off. These settings are read when the plugin is enabled, so `/econ reload` does not apply a change
-to them; restart the server instead. Details: https://danielstephenson.dev/usage-reporting.
+off. These settings are read when the plugin is enabled. `/econ reload` after setting
+`usage-reporting.enabled: false` stops reporting at once; any other change to them, including turning
+reporting back on, waits for a restart. Details: https://danielstephenson.dev/usage-reporting.
+
+Only a value that clearly means on (`true`, or the string `true`, `on`, `yes` or `1`) turns reporting on: a quoted
+`"false"`, a typo or an empty value turns it off. The plugin never writes over a `config.yml` it cannot
+parse; it logs the error, and reporting stays off until the file is fixed. An `enabled: false` written by
+hand while the server runs is kept by every later save of the config. The environment variables fail
+closed too: `TRACE_USAGE_REPORTING` set to anything but blank or `true`/`on`/`yes`/`1` turns reporting
+off, as does `DO_NOT_TRACK` set to anything but blank or `0`/`false`/`off`/`no`.
 
 A `config.yml` written by a version before usage reporting has no `usage-reporting` block. The
 plugin appends the block, like any other missing key, to that file on the next enable or

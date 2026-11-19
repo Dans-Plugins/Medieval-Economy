@@ -120,7 +120,44 @@ public class UsageReportingConfigTest {
                         + line.trim(), "", matcher.group(1).trim());
             }
         }
-        assertEquals("usage-reporting keys read in ConfigService", 3, reads);
+        // the switch itself is read through UsageReportingSetting (see the test below)
+        assertEquals("usage-reporting keys read in ConfigService", 2, reads);
+    }
+
+    /**
+     * getBoolean() reads a quoted "false" as the default, true; UsageReportingSettingTest covers
+     * what isEnabled() does instead. This pins that ConfigService uses it.
+     */
+    @Test
+    public void configService_readsTheSwitchThroughUsageReportingSetting() {
+        String source = String.join("\n", read(CONFIG_SERVICE));
+        assertTrue(source.contains("UsageReportingSetting.isEnabled(medievalEconomy.getConfig(),"));
+        assertFalse(source.contains("getBoolean(USAGE_REPORTING_ENABLED_KEY)"));
+    }
+
+    /**
+     * A config.yml Bukkit cannot parse is loaded as empty, so it has no version and the version
+     * mismatch path would move it aside and write the defaults, usage reporting on, in its place.
+     */
+    @Test
+    public void theVersionMismatchPath_leavesAFileItCannotParseAlone() {
+        String source = String.join("\n", read(CONFIG_SERVICE));
+        int method = source.indexOf("public void renameConfigToConfigDotOldAndSaveDefaults()");
+        int guard = source.indexOf("UsageReportingSetting.isUnparseable(saveFile)", method);
+        int keep = source.indexOf("UsageReportingSetting.keepOptOutFromDisk(medievalEconomy.getConfig(), saveFile)", method);
+        int rename = source.indexOf("saveFile.renameTo(", method);
+        assertTrue("the unparseable check must come before the file is renamed", guard > method && guard < rename);
+        assertTrue("an opt-out must be carried over before the file is renamed", keep > method && keep < rename);
+    }
+
+    /** Turning reporting off and running /econ reload stops it at once. */
+    @Test
+    public void reload_stopsUsageReportingWhenItIsNowOff() {
+        String source = String.join("\n", read(CONFIG_SERVICE));
+        int method = source.indexOf("public boolean reload()");
+        int stop = source.indexOf("medievalEconomy.stopUsageReporting();", method);
+        int end = source.indexOf("return true;", method);
+        assertTrue(stop > method && stop < end);
     }
 
     private YamlConfiguration bundledConfig() {
